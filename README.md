@@ -49,7 +49,7 @@ In combination with the in-memory storage implementation, you can quickly create
 As shown in the videos, you first need a service class that is responsible for processing all HTTP requests at a specific URL. In this 
 class, you implement methods for handling all kind of HTTP requests (GET, POST, PUT, DELETE). Each of these methods should
 delegate the processing of the request to a class that extends `AbstractState`. In the demo application, you can find an example
-of such a service class in the `PersonService' class.
+of such a service class in the `PersonService` class.
 
 Next, you need to create a class that extends `AbstractState` or one of its subclasses. In this class, you implement the abstract methods
 like `loadModelById` or `defineTransitionLinks`. In the demo application, you can find an example of such a class in the `GetSinglePerson` class.
