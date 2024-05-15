@@ -4,8 +4,8 @@ import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.AbstractInMemoryStorage;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.InMemoryPaging;
 import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
+import de.fhws.fiw.fds.suttondemo.server.PersonDao;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Person;
-import de.fhws.fiw.fds.suttondemo.server.database.PersonDao;
 
 import java.util.function.Predicate;
 
@@ -16,10 +16,6 @@ public class PersonStorage extends AbstractInMemoryStorage<Person> implements Pe
                 byFirstAndLastName(firstName, lastName),
                 searchParameter
         ), searchParameter.getOffset(), searchParameter.getSize());
-    }
-
-    public void resetDatabase() {
-        this.storage.clear();
     }
 
     private Predicate<Person> byFirstAndLastName(String firstName, String lastName) {

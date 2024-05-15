@@ -12,7 +12,7 @@
  * the License.
  */
 
-package de.fhws.fiw.fds.suttondemo.server.database;
+package de.fhws.fiw.fds.suttondemo.server;
 
 import de.fhws.fiw.fds.sutton.server.database.IDatabaseAccessObject;
 import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
@@ -24,5 +24,4 @@ public interface PersonDao extends IDatabaseAccessObject<Person> {
     CollectionModelResult<Person> readByFirstNameAndLastName(String firstName, String lastName,
                                                              SearchParameter searchParameter);
 
-    void resetDatabase();
 }

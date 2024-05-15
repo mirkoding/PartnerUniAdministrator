@@ -1,8 +1,13 @@
 package de.fhws.fiw.fds.suttondemo.server.api.services;
 
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.ServletRequestAdapter.JerseyServletRequest;
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.requestAdapter.JerseyRequest;
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.uriInfoAdapter.JerseyUriInfoAdapter;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import de.fhws.fiw.fds.suttondemo.server.api.states.dispatcher.GetDispatcher;
+import de.fhws.fiw.fds.suttondemo.server.database.utils.InitializeDatabase;
 import de.fhws.fiw.fds.suttondemo.server.database.utils.ResetDatabase;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -29,8 +34,21 @@ public class DispatcherJerseyService extends AbstractJerseyService {
     @Path("resetdatabase")
     @Produces({MediaType.APPLICATION_JSON})
     public Response resetDatabase() {
-        System.out.println("Resetting database");
+        System.out.println("RESET DATABASE");
+
         ResetDatabase.resetAll();
+
+        return Response.ok().build();
+    }
+
+    @GET
+    @Path("filldatabase")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response fillDatabase() {
+        System.out.println("FILL DATABASE");
+
+        InitializeDatabase.initializeDBWithRelations();
+
         return Response.ok().build();
     }
 }

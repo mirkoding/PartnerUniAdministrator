@@ -5,8 +5,6 @@
     <description>How to use Hibernate with Sutton</description>
     <class>de.fhws.fiw.fds.sutton.server.database.hibernate.models.AbstractDBModel</class>
     <class>de.fhws.fiw.fds.sutton.server.database.hibernate.models.AbstractDBRelation</class>
-    <class>de.fhws.fiw.fds.sutton.server.api.rateLimiting.model.APIKey</class>
-    <class>de.fhws.fiw.fds.sutton.server.api.security.model.UserDB</class>
     <class>de.fhws.fiw.fds.suttondemo.server.database.hibernate.models.PersonDB</class>
     <class>de.fhws.fiw.fds.suttondemo.server.database.hibernate.models.LocationDB</class>
     <class>de.fhws.fiw.fds.suttondemo.server.database.hibernate.models.PersonLocationDB</class>
@@ -14,10 +12,10 @@
     <properties>
         <property name="hibernate.hbm2ddl.auto" value="create"/>
         <property name="hibernate.show_sql" value="true"/>
-        <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/PersonDemo"/>
-        <property name="jakarta.persistence.jdbc.user" value="demouser"/>
-        <property name="jakarta.persistence.jdbc.password" value="password"/>
+        <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
+        <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:mem:PersonDemo;DB_CLOSE_DELAY=-1"/>
+        <property name="jakarta.persistence.jdbc.user" value="sa"/>
+        <property name="jakarta.persistence.jdbc.password" value=""/>
     </properties>
 </persistence-unit>
 </persistence>

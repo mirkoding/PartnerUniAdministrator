@@ -15,17 +15,24 @@
 package de.fhws.fiw.fds.suttondemo.client.web;
 
 import de.fhws.fiw.fds.sutton.client.web.WebApiResponse;
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.HttpHeaders;
 import de.fhws.fiw.fds.suttondemo.client.models.PersonClientModel;
 import okhttp3.Headers;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class PersonWebResponse extends WebApiResponse<PersonClientModel> {
 
+    private final static String HEADER_LOCATION = HttpHeaders.LOCATION;
 
-    public PersonWebResponse(final Collection<PersonClientModel> responseData, final Headers headers, final int lastStatusCode) {
+    public PersonWebResponse(final Collection<PersonClientModel> responseData,
+                             final Headers headers, final int lastStatusCode) {
         super(responseData, headers, lastStatusCode);
     }
 
+    public Optional<String> getLocationHeader() {
+        return getResponseHeaders().values(HEADER_LOCATION).stream().findFirst();
+    }
 
 }

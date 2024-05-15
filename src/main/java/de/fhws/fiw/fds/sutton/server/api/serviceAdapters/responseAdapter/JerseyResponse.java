@@ -1,9 +1,7 @@
 package de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter;
 
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.cachingAdapter.SuttonCacheController;
-import jakarta.ws.rs.core.CacheControl;
-import jakarta.ws.rs.core.GenericEntity;
-import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.*;
 
 import java.net.URI;
 import java.util.Collection;

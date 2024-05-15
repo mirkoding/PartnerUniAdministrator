@@ -1,4 +1,4 @@
-package de.fhws.fiw.fds.suttondemo.server.database;
+package de.fhws.fiw.fds.suttondemo.server;
 
 import de.fhws.fiw.fds.sutton.server.database.IDatabaseRelationAccessObject;
 import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
