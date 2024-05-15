@@ -12,9 +12,8 @@ import de.fhws.fiw.fds.suttondemo.server.database.hibernate.dao.PersonDaoHiberna
 import de.fhws.fiw.fds.suttondemo.server.database.hibernate.dao.PersonDaoHibernateImpl;
 import de.fhws.fiw.fds.suttondemo.server.database.hibernate.datafaker.PersonDataFaker;
 import de.fhws.fiw.fds.suttondemo.server.database.hibernate.models.PersonDB;
+import org.modelmapper.ModelMapper;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -28,6 +27,7 @@ public class PersonDaoAdapter implements PersonDao {
 
     private PersonDaoHibernate dao = new PersonDaoHibernateImpl();
     private final PersonDataFaker faker = new PersonDataFaker();
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public NoContentResult create(Person model) {
@@ -73,28 +73,12 @@ public class PersonDaoAdapter implements PersonDao {
         readAll().getResult().stream().map(Person::getId).forEach(this::delete);
     }
 
-    private Collection<Person> createFrom(Collection<PersonDB> models) {
-        return models.stream().map(m -> createFrom(m)).collect(Collectors.toList());
-    }
-
     private Person createFrom(PersonDB model) {
-        final Person returnValue = new Person();
-        returnValue.setId(model.getId());
-        returnValue.setBirthDate(model.getBirthDate());
-        returnValue.setFirstName(model.getFirstName());
-        returnValue.setLastName(model.getLastName());
-        returnValue.setEmailAddress(model.getEmailAddress());
-        return returnValue;
+        return modelMapper.map(model, Person.class);
     }
 
     private PersonDB createFrom(Person model) {
-        final PersonDB returnValue = new PersonDB();
-        returnValue.setId(model.getId());
-        returnValue.setBirthDate(model.getBirthDate());
-        returnValue.setFirstName(model.getFirstName());
-        returnValue.setLastName(model.getLastName());
-        returnValue.setEmailAddress(model.getEmailAddress());
-        return returnValue;
+        return modelMapper.map(model, PersonDB.class);
     }
 
     private SingleModelResult<Person> createResult(SingleModelHibernateResult<PersonDB> result) {
@@ -102,7 +86,7 @@ public class PersonDaoAdapter implements PersonDao {
             return new SingleModelResult<>();
         }
         if (result.hasError()) {
-            final SingleModelResult<Person> returnValue = new SingleModelResult<>();
+            final var returnValue = new SingleModelResult<Person>();
             returnValue.setError();
             return returnValue;
         } else {
@@ -111,15 +95,13 @@ public class PersonDaoAdapter implements PersonDao {
     }
 
     private CollectionModelResult<Person> createResult(CollectionModelHibernateResult<PersonDB> result) {
+        final var returnValue = new CollectionModelResult<Person>();
         if (result.hasError()) {
-            final CollectionModelResult<Person> returnValue = new CollectionModelResult<>();
             returnValue.setError();
-            return returnValue;
         } else {
-            final CollectionModelResult returnValue = new CollectionModelResult<>(createFrom(result.getResult()));
             returnValue.setTotalNumberOfResult(result.getTotalNumberOfResult());
-            return returnValue;
         }
+        return returnValue;
     }
 
     private void populateDatabase() {
