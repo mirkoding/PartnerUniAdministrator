@@ -39,12 +39,13 @@ public class PersonJerseyService extends AbstractJerseyService {
     public Response getAllPersons(
             @DefaultValue("") @QueryParam("firstname") final String firstName,
             @DefaultValue("") @QueryParam("lastname") final String lastName,
+            @DefaultValue("+lastname") @QueryParam("order") final String order,
             @DefaultValue("0") @QueryParam("offset") int offset,
             @DefaultValue("20") @QueryParam("size") int size) {
         try {
             return new GetAllPersons(
                     this.serviceContext,
-                    new QueryByFirstAndLastName<>(firstName, lastName, offset, size)
+                    new QueryByFirstAndLastName<>(firstName, lastName, order, offset, size)
             ).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());

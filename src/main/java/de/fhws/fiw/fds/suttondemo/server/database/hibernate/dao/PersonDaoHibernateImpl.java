@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
@@ -88,14 +89,13 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
     }
 
     private CollectionModelHibernateResult<PersonDB> filterByFirstNameAndLastName(
-            EntityManager em, String firstName, String lastName,
-            SearchParameter searchParameter) throws Exception {
+            EntityManager em, String firstName, String lastName, SearchParameter searchParameter) throws Exception {
         final var cb = em.getCriteriaBuilder();
         final var query = cb.createQuery(PersonDB.class);
         final var root = query.from(PersonDB.class);
         final var predicate = createPredicate(cb, root, firstName, lastName);
 
-        query.select(root).where(predicate);
+        query.select(root).where(predicate).orderBy(createPersonOrder(cb, root, searchParameter));
 
         final var result = em.createQuery(query)
                 .setFirstResult(searchParameter.getOffset())
@@ -105,6 +105,26 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
         return new CollectionModelHibernateResult<>(result);
     }
 
+    private Order createPersonOrder(CriteriaBuilder cb, Root<PersonDB> root, SearchParameter searchParameter) {
+        final var direction = searchParameter.getOrderByAttribute().charAt(0);
+        final var attribute = searchParameter.getOrderByAttribute().substring(1);
+        final var dbAttribute = translateToDbAttribute(attribute);
+
+        if (direction == '+') {
+            return cb.asc(root.get(dbAttribute));
+        } else {
+            return cb.desc(root.get(dbAttribute));
+        }
+    }
+
+    private String translateToDbAttribute(String attribute) {
+        return switch (attribute) {
+            case "firstname" -> "firstName";
+            case "lastname" -> "lastName";
+            case "birthdate" -> "birthDate";
+            default -> "id";
+        };
+    }
 
     private int totalCountByFirstNameAndLastName(
             EntityManager em, String firstName, String lastName,

@@ -26,14 +26,17 @@ public class QueryByFirstAndLastName<R> extends AbstractQuery<R, Person> {
 
     private final String firstName;
     private final String lastName;
+    private final String order;
 
-    public QueryByFirstAndLastName(String firstName, String lastName, int offset, int size) {
+    public QueryByFirstAndLastName(String firstName, String lastName, String order, int offset, int size) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.order = order;
         this.pagingBehavior = new PagingBehaviorUsingOffsetSize<>(offset, size);
     }
 
     protected CollectionModelResult<Person> doExecuteQuery(SearchParameter searchParameter) throws DatabaseException {
+        searchParameter.setOrderByAttribute(this.order);
         return DaoFactory.getInstance().getPersonDao().readByFirstNameAndLastName(
                 this.firstName,
                 this.lastName,
