@@ -15,6 +15,7 @@
 package de.fhws.fiw.fds.suttondemo.server;
 
 
+import de.fhws.fiw.fds.suttondemo.server.database.hibernate.PersonDaoAdapter;
 import de.fhws.fiw.fds.suttondemo.server.database.inmemory.LocationStorage;
 import de.fhws.fiw.fds.suttondemo.server.database.inmemory.PersonLocationStorage;
 import de.fhws.fiw.fds.suttondemo.server.database.inmemory.PersonStorage;
@@ -38,7 +39,7 @@ public class DaoFactory {
     private final PersonLocationDao personLocationDao;
 
     private DaoFactory() {
-        this.personDao = new PersonStorage();
+        this.personDao = new PersonDaoAdapter();
         this.locationDao = new LocationStorage();
         this.personLocationDao = new PersonLocationStorage(this.locationDao);
     }
