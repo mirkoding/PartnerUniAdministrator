@@ -128,6 +128,7 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
     @Override
     public CollectionModelHibernateResult<PersonDB> readByBirthday(String birthday, SearchParameter searchParameter) {
+        /* We omit paging in this example */
         try (EntityManager em = JpaUtils.getEntityManager()) {
             TypedQuery<PersonDB> query = em.createQuery("SELECT p FROM PersonDB p WHERE p.birthDate = :birthday", PersonDB.class);
             query.setParameter("birthday", LocalDate.parse(birthday, DateTimeFormatter.ISO_DATE));

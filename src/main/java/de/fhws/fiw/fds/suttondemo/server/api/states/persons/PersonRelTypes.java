@@ -23,5 +23,5 @@ public interface PersonRelTypes {
     String UPDATE_SINGLE_PERSON = "updatePerson";
     String DELETE_SINGLE_PERSON = "deletePerson";
     String GET_SINGLE_PERSON = "getPerson";
-
+    String FILTER_BY_NAME = "filterPersonsByNames";
 }
