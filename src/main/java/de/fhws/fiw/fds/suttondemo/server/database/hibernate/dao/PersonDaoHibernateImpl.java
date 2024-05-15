@@ -7,9 +7,13 @@ import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
 import de.fhws.fiw.fds.suttondemo.server.database.hibernate.models.PersonDB;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
@@ -51,7 +55,7 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
     @Override
     public CollectionModelHibernateResult<PersonDB> readAll(SearchParameter searchParameter) {
-        
+
         try (EntityManager em = JpaUtils.getEntityManager()) {
             final var cb = em.getCriteriaBuilder();
             final var cq = cb.createQuery(PersonDB.class);
@@ -74,7 +78,6 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
     @Override
     public CollectionModelHibernateResult<PersonDB> readByFirstNameAndLastName(String firstName, String lastName,
                                                                                SearchParameter searchParameter) {
-
         try (EntityManager em = JpaUtils.getEntityManager()) {
             var result = filterByFirstNameAndLastName(em, firstName, lastName, searchParameter);
             result.setTotalNumberOfResult(totalCountByFirstNameAndLastName(em, firstName, lastName, searchParameter));
@@ -121,6 +124,18 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
         final Predicate matchFirstName = cb.like(cb.lower(root.get("firstName")), firstName.toLowerCase() + "%");
         final Predicate matchLastName = cb.like(cb.lower(root.get("lastName")), lastName.toLowerCase() + "%");
         return cb.and(matchFirstName, matchLastName);
+    }
+
+    @Override
+    public CollectionModelHibernateResult<PersonDB> readByBirthday(String birthday, SearchParameter searchParameter) {
+        try (EntityManager em = JpaUtils.getEntityManager()) {
+            TypedQuery<PersonDB> query = em.createQuery("SELECT p FROM PersonDB p WHERE p.birthDate = :birthday", PersonDB.class);
+            query.setParameter("birthday", LocalDate.parse(birthday, DateTimeFormatter.ISO_DATE));
+            var result = query.getResultList();
+            return new CollectionModelHibernateResult<>(result);
+        } catch (Exception e) {
+            return errorCollectionResult();
+        }
     }
 
     @Override

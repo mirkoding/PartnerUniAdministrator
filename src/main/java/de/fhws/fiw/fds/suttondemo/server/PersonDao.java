@@ -24,6 +24,8 @@ public interface PersonDao extends IDatabaseAccessObject<Person> {
     CollectionModelResult<Person> readByFirstNameAndLastName(String firstName, String lastName,
                                                              SearchParameter searchParameter);
 
+    CollectionModelResult<Person> readByBirthday(String birthday, SearchParameter searchParameter);
+
     void resetDatabase();
 
 }

@@ -14,6 +14,8 @@ import de.fhws.fiw.fds.suttondemo.server.database.hibernate.datafaker.PersonData
 import de.fhws.fiw.fds.suttondemo.server.database.hibernate.models.PersonDB;
 import org.modelmapper.ModelMapper;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -64,6 +66,11 @@ public class PersonDaoAdapter implements PersonDao {
     }
 
     @Override
+    public CollectionModelResult<Person> readByBirthday(String birthday, SearchParameter searchParameter) {
+        return createResult(this.dao.readByBirthday(birthday, searchParameter));
+    }
+
+    @Override
     public NoContentResult delete(long id) {
         return this.dao.delete(id);
     }
@@ -71,6 +78,10 @@ public class PersonDaoAdapter implements PersonDao {
     @Override
     public void resetDatabase() {
         readAll().getResult().stream().map(Person::getId).forEach(this::delete);
+    }
+
+    private Collection<Person> createFrom(Collection<PersonDB> models) {
+        return models.stream().map(m -> createFrom(m)).collect(Collectors.toList());
     }
 
     private Person createFrom(PersonDB model) {
@@ -95,7 +106,7 @@ public class PersonDaoAdapter implements PersonDao {
     }
 
     private CollectionModelResult<Person> createResult(CollectionModelHibernateResult<PersonDB> result) {
-        final var returnValue = new CollectionModelResult<Person>();
+        final var returnValue = new CollectionModelResult<>(createFrom(result.getResult()));
         if (result.hasError()) {
             returnValue.setError();
         } else {

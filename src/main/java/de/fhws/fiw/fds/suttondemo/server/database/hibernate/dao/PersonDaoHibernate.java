@@ -10,4 +10,5 @@ public interface PersonDaoHibernate extends IDatabaseAccessObjectHibernate<Perso
     CollectionModelHibernateResult<PersonDB> readByFirstNameAndLastName(String firstName, String lastName,
                                                                         SearchParameter searchParameter);
 
+    CollectionModelHibernateResult<PersonDB> readByBirthday(String birthday, SearchParameter searchParameter);
 }

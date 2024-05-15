@@ -15,23 +15,17 @@
 package de.fhws.fiw.fds.suttondemo.server.api.services;
 
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
-import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.ServletRequestAdapter.JerseyServletRequest;
-import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.requestAdapter.JerseyRequest;
-import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
-import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.uriInfoAdapter.JerseyUriInfoAdapter;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Location;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Person;
+import de.fhws.fiw.fds.suttondemo.server.api.queries.QueryByBirthday;
 import de.fhws.fiw.fds.suttondemo.server.api.queries.QueryByFirstAndLastName;
 import de.fhws.fiw.fds.suttondemo.server.api.queries.QueryByLocationName;
 import de.fhws.fiw.fds.suttondemo.server.api.states.person_locations.*;
 import de.fhws.fiw.fds.suttondemo.server.api.states.persons.*;
-
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.Collection;
 
 @Path("persons")
 public class PersonJerseyService extends AbstractJerseyService {
@@ -51,6 +45,23 @@ public class PersonJerseyService extends AbstractJerseyService {
             return new GetAllPersons(
                     this.serviceContext,
                     new QueryByFirstAndLastName<>(firstName, lastName, offset, size)
+            ).execute();
+        } catch (SuttonWebAppException e) {
+            throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+        }
+    }
+
+    @GET
+    @Path("birthday/{birthday}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getAllPersonsByBirthday(
+            @DefaultValue("") @PathParam("birthday") final String birthday,
+            @DefaultValue("0") @QueryParam("offset") int offset,
+            @DefaultValue("20") @QueryParam("size") int size) {
+        try {
+            return new GetAllPersons(
+                    this.serviceContext,
+                    new QueryByBirthday<>(birthday, offset, size)
             ).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
@@ -127,7 +138,7 @@ public class PersonJerseyService extends AbstractJerseyService {
     public Response getLocationByIdOfPerson(@PathParam("personId") final long personId,
                                             @PathParam("locationId") final long locationId) {
         try {
-            return new GetSingleLocationOfPerson( this.serviceContext, personId, locationId ).execute();
+            return new GetSingleLocationOfPerson(this.serviceContext, personId, locationId).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(Response.status(e.getStatus().getCode())
                     .entity(e.getExceptionMessage()).build());
@@ -139,7 +150,7 @@ public class PersonJerseyService extends AbstractJerseyService {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createNewLocationOfPerson(@PathParam("personId") final long personId, final Location location) {
         try {
-            return new PostNewLocationOfPerson( this.serviceContext, personId, location ).execute();
+            return new PostNewLocationOfPerson(this.serviceContext, personId, location).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(Response.status(e.getStatus().getCode())
                     .entity(e.getExceptionMessage()).build());
@@ -152,7 +163,7 @@ public class PersonJerseyService extends AbstractJerseyService {
     public Response updateNewLocationOfPerson(@PathParam("personId") final long personId,
                                               @PathParam("locationId") final long locationId, final Location location) {
         try {
-            return new PutSingleLocationOfPerson( this.serviceContext, personId, locationId, location ).execute();
+            return new PutSingleLocationOfPerson(this.serviceContext, personId, locationId, location).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(Response.status(e.getStatus().getCode())
                     .entity(e.getExceptionMessage()).build());
@@ -164,7 +175,7 @@ public class PersonJerseyService extends AbstractJerseyService {
     public Response deleteLocationOfPerson(@PathParam("personId") final long personId,
                                            @PathParam("locationId") final long locationId) {
         try {
-            return new DeleteSingleLocationOfPerson( this.serviceContext, locationId, personId ).execute();
+            return new DeleteSingleLocationOfPerson(this.serviceContext, locationId, personId).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(Response.status(e.getStatus().getCode())
                     .entity(e.getExceptionMessage()).build());

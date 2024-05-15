@@ -24,29 +24,13 @@ import de.fhws.fiw.fds.suttondemo.server.api.models.Person;
 
 public class QueryByFirstAndLastName<R> extends AbstractQuery<R, Person> {
 
-    private String firstName;
-    private String lastName;
+    private final String firstName;
+    private final String lastName;
 
     public QueryByFirstAndLastName(String firstName, String lastName, int offset, int size) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.pagingBehavior = new PagingBehaviorUsingOffsetSize<>(offset, size);
-    }
-
-    public String getFirstName() {
-        return this.firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     protected CollectionModelResult<Person> doExecuteQuery(SearchParameter searchParameter) throws DatabaseException {
