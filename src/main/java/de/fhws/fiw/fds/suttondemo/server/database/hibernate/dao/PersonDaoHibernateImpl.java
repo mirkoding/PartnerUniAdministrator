@@ -1,13 +1,11 @@
 package de.fhws.fiw.fds.suttondemo.server.database.hibernate.dao;
 
 import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
-import de.fhws.fiw.fds.sutton.server.database.hibernate.IDatabaseConnection;
 import de.fhws.fiw.fds.sutton.server.database.hibernate.results.CollectionModelHibernateResult;
 import de.fhws.fiw.fds.sutton.server.database.hibernate.results.SingleModelHibernateResult;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
 import de.fhws.fiw.fds.suttondemo.server.database.hibernate.models.PersonDB;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -15,26 +13,23 @@ import jakarta.persistence.criteria.Root;
 
 public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
-    private static final EntityManagerFactory emf = IDatabaseConnection.SUTTON_EMF;
-
     public PersonDaoHibernateImpl() {
         super();
     }
 
     @Override
     public NoContentResult create(PersonDB model) {
-        final EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = null;
+        final EntityManager em = JpaUtils.getEntityManager();
+        EntityTransaction transaction = em.getTransaction();
 
         try {
-            transaction = em.getTransaction();
             transaction.begin();
             em.persist(model);
             transaction.commit();
 
             return new NoContentResult();
         } catch (Exception e) {
-            if (transaction != null) {
+            if (transaction.isActive()) {
                 transaction.rollback();
             }
             return errorNocontentResult();
@@ -46,7 +41,7 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
     @Override
     public SingleModelHibernateResult<PersonDB> readById(long id) {
 
-        try (EntityManager em = emf.createEntityManager()) {
+        try (EntityManager em = JpaUtils.getEntityManager()) {
             final PersonDB result = em.find(PersonDB.class, id);
             return new SingleModelHibernateResult<>(result);
         } catch (Exception e) {
@@ -56,8 +51,8 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
     @Override
     public CollectionModelHibernateResult<PersonDB> readAll(SearchParameter searchParameter) {
-
-        try (EntityManager em = emf.createEntityManager()) {
+        
+        try (EntityManager em = JpaUtils.getEntityManager()) {
             final var cb = em.getCriteriaBuilder();
             final var cq = cb.createQuery(PersonDB.class);
             final var rootEntry = cq.from(PersonDB.class);
@@ -66,7 +61,6 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
             final var allQuery = em.createQuery(all);
 
             final var result = allQuery
-                    .setHint("org.hibernate.cacheable", true)
                     .setFirstResult(searchParameter.getOffset())
                     .setMaxResults(searchParameter.getSize())
                     .getResultList();
@@ -81,7 +75,7 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
     public CollectionModelHibernateResult<PersonDB> readByFirstNameAndLastName(String firstName, String lastName,
                                                                                SearchParameter searchParameter) {
 
-        try (EntityManager em = emf.createEntityManager()) {
+        try (EntityManager em = JpaUtils.getEntityManager()) {
             var result = filterByFirstNameAndLastName(em, firstName, lastName, searchParameter);
             result.setTotalNumberOfResult(totalCountByFirstNameAndLastName(em, firstName, lastName, searchParameter));
             return result;
@@ -101,7 +95,6 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
         query.select(root).where(predicate);
 
         final var result = em.createQuery(query)
-                .setHint("org.hibernate.cacheable", true)
                 .setFirstResult(searchParameter.getOffset())
                 .setMaxResults(searchParameter.getSize())
                 .getResultList();
@@ -120,9 +113,7 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
         query.select(cb.count(root)).where(predicate);
 
-        return em.createQuery(query)
-                .setHint("org.hibernate.cacheable", true)
-                .getSingleResult().intValue();
+        return em.createQuery(query).getSingleResult().intValue();
     }
 
 
@@ -134,7 +125,7 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
     @Override
     public NoContentResult update(PersonDB model) {
-        try (EntityManager em = emf.createEntityManager()) {
+        try (EntityManager em = JpaUtils.getEntityManager()) {
             final var transaction = em.getTransaction();
             try {
                 transaction.begin();
@@ -154,7 +145,7 @@ public class PersonDaoHibernateImpl implements PersonDaoHibernate {
 
     @Override
     public NoContentResult delete(long id) {
-        try (EntityManager em = emf.createEntityManager()) {
+        try (EntityManager em = JpaUtils.getEntityManager()) {
             final var transaction = em.getTransaction();
             try {
                 transaction.begin();
