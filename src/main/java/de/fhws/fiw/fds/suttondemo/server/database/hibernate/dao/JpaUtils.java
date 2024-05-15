@@ -1,6 +1,5 @@
 package de.fhws.fiw.fds.suttondemo.server.database.hibernate.dao;
 
-import de.fhws.fiw.fds.sutton.server.database.hibernate.IDatabaseConnection;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
