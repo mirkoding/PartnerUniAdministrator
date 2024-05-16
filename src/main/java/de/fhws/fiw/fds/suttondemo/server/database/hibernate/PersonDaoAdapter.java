@@ -80,6 +80,11 @@ public class PersonDaoAdapter implements PersonDao {
         readAll().getResult().stream().map(Person::getId).forEach(this::delete);
     }
 
+    @Override public void initializeDatabase( )
+    {
+        populateDatabase();
+    }
+
     private Collection<Person> createFrom(Collection<PersonDB> models) {
         return models.stream().map(m -> createFrom(m)).collect(Collectors.toList());
     }
@@ -116,7 +121,7 @@ public class PersonDaoAdapter implements PersonDao {
     }
 
     private void populateDatabase() {
-        IntStream.range(0, 2).forEach(i -> this.dao.create(createPerson()));
+        IntStream.range(0, 100).forEach(i -> this.dao.create(createPerson()));
     }
 
     private PersonDB createPerson() {

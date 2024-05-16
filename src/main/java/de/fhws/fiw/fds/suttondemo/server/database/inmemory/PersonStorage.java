@@ -33,6 +33,11 @@ public class PersonStorage extends AbstractInMemoryStorage<Person> implements Pe
         this.storage.clear();
     }
 
+    @Override public void initializeDatabase( )
+    {
+
+    }
+
     private Predicate<Person> byFirstAndLastName(String firstName, String lastName) {
         return p -> (firstName.isEmpty() || p.getFirstName().equals(firstName)) && (lastName.isEmpty() || p.getLastName().equals(lastName));
     }

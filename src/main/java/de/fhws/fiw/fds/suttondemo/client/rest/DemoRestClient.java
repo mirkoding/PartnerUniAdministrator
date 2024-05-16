@@ -15,7 +15,7 @@ public class DemoRestClient extends AbstractRestClient {
     private static final String BASE_URL = "http://localhost:8080/demo/api";
     private static final String GET_ALL_PERSONS = "getAllPersons";
     private static final String CREATE_PERSON = "createPerson";
-
+    public static final String FILTER_PERSONS_BY_NAMES = "filterPersonsByNames";
 
     private List<PersonClientModel> currentPersonData;
     private int cursorPersonData = 0;
@@ -36,6 +36,10 @@ public class DemoRestClient extends AbstractRestClient {
         });
     }
 
+    public void fillDatabase() throws IOException
+    {
+        processResponse( this.client.fillDatabase(BASE_URL), (response) -> {} );
+    }
     public void start() throws IOException {
         processResponse(this.client.getDispatcher(BASE_URL), (response) -> {
         });
@@ -72,12 +76,12 @@ public class DemoRestClient extends AbstractRestClient {
     }
 
     public boolean isGetByFirstNameAndLastNameAllowed() {
-        return isLinkAvailable("filterPersonsByNames");
+        return isLinkAvailable( FILTER_PERSONS_BY_NAMES );
     }
 
     public void getByFirstNameAndLastName(String firstName, String lastName) throws IOException {
         if (isGetByFirstNameAndLastNameAllowed()) {
-            var url = getUrl("filterPersonsByNames");
+            var url = getUrl( FILTER_PERSONS_BY_NAMES );
             url = url.replace("{FIRSTNAME}", firstName);
             url = url.replace("{LASTNAME}", lastName);
             processResponse(this.client.getCollectionOfPersons(url), (response) -> {

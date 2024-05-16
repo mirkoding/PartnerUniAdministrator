@@ -109,4 +109,27 @@ public class TestDemoAppIT {
         client.getSinglePerson();
         assertEquals(200, client.getLastStatusCode());
     }
+    @Test void test_create_many_persons_and_filter_by_name() throws IOException
+    {
+        /* Create 100 random people */
+        client.fillDatabase();
+
+        /* Create one person with a known name */
+        var person = new PersonClientModel();
+        person.setFirstName("Max");
+        person.setLastName("Mustermann");
+        person.setBirthDate(LocalDate.of( 1990, 1, 1));
+        person.setEmailAddress("max.mustermann@thws.de");
+
+        client.start();
+        client.createPerson(person);
+        assertEquals(201, client.getLastStatusCode());
+
+        /* We need to start over because at the moment,only the dispatcher returns the filter query template */
+        client.start();
+
+        assertTrue( client.isGetByFirstNameAndLastNameAllowed() );
+        client.getByFirstNameAndLastName( "Max", "Muster" );
+        assertEquals( 1, client.personData().size() );
+    }
 }

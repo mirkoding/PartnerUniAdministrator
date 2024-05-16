@@ -28,4 +28,6 @@ public interface PersonDao extends IDatabaseAccessObject<Person> {
 
     void resetDatabase();
 
+    void initializeDatabase();
+
 }
