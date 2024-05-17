@@ -1,7 +1,10 @@
 package de.fhws.fiw.fds.PartnerUniAdministrator.server.api.services;
 
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.University;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryBySearch;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.GetAllUniversities;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.GetSingleUniversity;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.PostNewUniversity;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import jakarta.ws.rs.*;
@@ -22,11 +25,34 @@ public class UniversityService extends AbstractJerseyService {
             @DefaultValue("0") @QueryParam("offset") final int offset,
             @DefaultValue("15") @QueryParam("size") final int size)
       {
-            try{
+            try {
                   return new GetAllUniversities(this.serviceContext, new QueryBySearch<>(search, offset, size)).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+            }
+      }
+
+      @GET
+      @Path("{id: \\d+}")
+      @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+      public Response getUniversity(@PathParam("id") final long id) {
+            try {
+                  return new GetSingleUniversity(this.serviceContext, id).execute();
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
+      @POST
+      @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+      public Response createSingleUniversity(final University universityModel) {
+            try {
+                  return new PostNewUniversity(this.serviceContext, universityModel).execute();
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
             }
       }
 }

@@ -7,7 +7,7 @@ import de.fhws.fiw.fds.sutton.server.api.hyperlinks.annotations.SuttonLink;
 import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @JsonRootName("university")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,8 +21,8 @@ public class University extends AbstractModel {
       private String contactPersonName;
       private int amountStudentsToSend;
       private int amountStudentsToReceive;
-      private LocalDateTime startNextSpringSem;
-      private LocalDateTime startNextAutumnSem;
+      private LocalDate startNextSpringSem;
+      private LocalDate startNextAutumnSem;
 
       @SuttonLink(
             value = "partnerUniversities/${id}",
@@ -46,8 +46,8 @@ public class University extends AbstractModel {
             String partnerUniDepartment,
             String partnerUniDepartmentURL,
             String partnerUniName,
-            LocalDateTime startNextAutumnSem,
-            LocalDateTime startNextSpringSem
+            LocalDate startNextAutumnSem,
+            LocalDate startNextSpringSem
       )
       {
             this.contactPersonName = contactPersonName;
@@ -133,19 +133,19 @@ public class University extends AbstractModel {
             this.selfLink = selfLink;
       }
 
-      public LocalDateTime getStartNextAutumnSem() {
+      public LocalDate getStartNextAutumnSem() {
             return startNextAutumnSem;
       }
 
-      public void setStartNextAutumnSem(LocalDateTime startNextAutumnSem) {
+      public void setStartNextAutumnSem(LocalDate startNextAutumnSem) {
             this.startNextAutumnSem = startNextAutumnSem;
       }
 
-      public LocalDateTime getStartNextSpringSem() {
+      public LocalDate getStartNextSpringSem() {
             return startNextSpringSem;
       }
 
-      public void setStartNextSpringSem(LocalDateTime startNextSpringSem) {
+      public void setStartNextSpringSem(LocalDate startNextSpringSem) {
             this.startNextSpringSem = startNextSpringSem;
       }
 

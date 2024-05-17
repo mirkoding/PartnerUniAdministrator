@@ -14,14 +14,18 @@ public class UniversityStorage extends AbstractInMemoryStorage<University> imple
       @Override
       public CollectionModelResult<University> readByNameOfUniversity(String name, SearchParameter searchParameter) {
             return InMemoryPaging.page(
-                  this.readAllByPredicate(byNameOfUniversity(name), searchParameter), 
+                  this.readAllByPredicate(byNameOfUniversity(name), searchParameter),
                   searchParameter.getOffset(),
                   searchParameter.getSize());
+      }
+
+      public void add(long primaryId, University university) {
+            this.storage.put(primaryId, university);
       }
 
       public void resetDatabase() {this.storage.clear();}
 
       private Predicate<University> byNameOfUniversity(String name) {
-            return p -> p.getPartnerUniName().equals(name);
+            return p -> p.getPartnerUniName().equals(name) || name.isEmpty();
       }
 }
