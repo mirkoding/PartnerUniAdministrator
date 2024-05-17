@@ -2,9 +2,7 @@ package de.fhws.fiw.fds.PartnerUniAdministrator.server.api.services;
 
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.University;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryBySearch;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.GetAllUniversities;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.GetSingleUniversity;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.PostNewUniversity;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.*;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import jakarta.ws.rs.*;
@@ -50,6 +48,29 @@ public class UniversityService extends AbstractJerseyService {
       public Response createSingleUniversity(final University universityModel) {
             try {
                   return new PostNewUniversity(this.serviceContext, universityModel).execute();
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
+      @PUT
+      @Path("{id: \\d+}")
+      @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+      public Response updateSingleUniversity(@PathParam("id") final long id, final University universityModel) {
+            try {
+                  return new PutSingleUniversity(this.serviceContext, id, universityModel).execute();
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
+      @DELETE
+      @Path("{id: \\d+}")
+      public Response deleteSingleUniversity(@PathParam("id") final long id) {
+            try {
+                  return new DeleteSingleUniversity(this.serviceContext, id).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
