@@ -5,8 +5,7 @@ import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.University;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryByModuleName;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryBySearch;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.*;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.GetAllModulesFromUniversity;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.PostNewModuleOfUniversity;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.*;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import jakarta.ws.rs.*;
@@ -87,7 +86,7 @@ public class UniversityService extends AbstractJerseyService {
 
       @GET
       @Path("{universityId: \\d+}/modules")
-      @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+      @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
       public Response getModulesFromUniversity(@PathParam("universityId") final long universityId,
                                                @DefaultValue("") @QueryParam("moduleName") final String moduleName,
                                                @DefaultValue("0") @QueryParam("offset") int offset,
@@ -95,7 +94,20 @@ public class UniversityService extends AbstractJerseyService {
       {
             try {
                   return new GetAllModulesFromUniversity(this.serviceContext, universityId, new QueryByModuleName(universityId, moduleName, offset, size)).execute();
-                  //TODO checken warum hier XML und nicht JSON zurückkommt.
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
+      @GET
+      @Path("{universityId: \\d+}/modules/{moduleId: \\d+}")
+      @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+      public Response getSingleModuleFromUniversity(@PathParam("universityId") final long universityId,
+                                                    @PathParam("moduleId") final long moduleId)
+      {
+            try {
+                  return new GetSingleModuleFromUniversity(this.serviceContext, universityId, moduleId).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
@@ -115,4 +127,33 @@ public class UniversityService extends AbstractJerseyService {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
             }
       }
+
+      @PUT
+      @Path("{universityId: \\d+}/modules/{moduleId: \\d+}")
+      @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+      public Response updateModuleFromUniversity(@PathParam("universityId") final long universityId,
+                                                 @PathParam("moduleId") final long moduleId,
+                                                 final Module moduleModel)
+      {
+            try {
+                  return new PutSingleModuleFromUniversity(this.serviceContext, universityId, moduleId, moduleModel).execute();
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
+      @DELETE
+      @Path("{universityId: \\d+}/modules/{moduleId: \\d+}")
+      public Response deleteModuleFromUniversity(@PathParam("universityId") final long universityId,
+                                                 @PathParam("moduleId") final long moduleId)
+      {
+            try {
+                  return new DeleteSingleModuleFromUniversity(this.serviceContext, moduleId, universityId).execute();
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
 }
