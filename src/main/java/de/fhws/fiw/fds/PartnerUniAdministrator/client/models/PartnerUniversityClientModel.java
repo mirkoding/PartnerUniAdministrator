@@ -11,9 +11,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.time.LocalDateTime;
 
-@JsonRootName("university")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@XmlRootElement(name="university")
+@XmlRootElement
 public class PartnerUniversityClientModel extends AbstractClientModel {
 
       private String partnerUniName;

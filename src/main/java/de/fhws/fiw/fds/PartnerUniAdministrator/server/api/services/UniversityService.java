@@ -1,8 +1,12 @@
 package de.fhws.fiw.fds.PartnerUniAdministrator.server.api.services;
 
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.Module;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.University;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryByModuleName;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryBySearch;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.*;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.GetAllModulesFromUniversity;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.PostNewModuleOfUniversity;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import jakarta.ws.rs.*;
@@ -15,6 +19,8 @@ public class UniversityService extends AbstractJerseyService {
       public UniversityService() {
             super();
       }
+
+      // ------------------------------- Bearbeitung von Requests für University -------------------------------
 
       @GET
       @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -71,6 +77,39 @@ public class UniversityService extends AbstractJerseyService {
       public Response deleteSingleUniversity(@PathParam("id") final long id) {
             try {
                   return new DeleteSingleUniversity(this.serviceContext, id).execute();
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
+      // ------------------------------- Bearbeitung von Requests für Modules (linked with Universities) -------------------------------
+
+      @GET
+      @Path("{universityId: \\d+}/modules")
+      @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+      public Response getModulesFromUniversity(@PathParam("universityId") final long universityId,
+                                               @DefaultValue("") @QueryParam("moduleName") final String moduleName,
+                                               @DefaultValue("0") @QueryParam("offset") int offset,
+                                               @DefaultValue("15") @QueryParam("size") int size)
+      {
+            try {
+                  return new GetAllModulesFromUniversity(this.serviceContext, universityId, new QueryByModuleName(universityId, moduleName, offset, size)).execute();
+                  //TODO checken warum hier XML und nicht JSON zurückkommt.
+            }
+            catch(SuttonWebAppException e) {
+                  throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
+            }
+      }
+
+      @POST
+      @Path("{universityId: \\d+}/modules")
+      @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+      public Response createNewModuleForUniversity(@PathParam("universityId") final long universityId,
+                                                   final Module moduleModel)
+      {
+            try {
+                  return new PostNewModuleOfUniversity(this.serviceContext, universityId, moduleModel).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());

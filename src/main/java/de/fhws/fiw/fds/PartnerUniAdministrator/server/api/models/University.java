@@ -2,7 +2,7 @@ package de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonRootName;
-import de.fhws.fiw.fds.sutton.client.utils.Link;
+import de.fhws.fiw.fds.sutton.server.api.hyperlinks.Link;
 import de.fhws.fiw.fds.sutton.server.api.hyperlinks.annotations.SuttonLink;
 import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -25,13 +25,13 @@ public class University extends AbstractModel {
       private LocalDate startNextAutumnSem;
 
       @SuttonLink(
-            value = "partnerUniversities/${id}",
+            value = "universities/${id}",
             rel = "self"
       )
       private transient Link selfLink;
 
       @SuttonLink(
-            value = "partnerUniversities/${id}/modules",
+            value = "universities/${id}/modules",
             rel = "getModulesOfPartnerUniversities"
       )
       private transient Link module;

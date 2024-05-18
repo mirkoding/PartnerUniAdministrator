@@ -19,13 +19,14 @@ public class UniversityStorage extends AbstractInMemoryStorage<University> imple
                   searchParameter.getSize());
       }
 
-      public void add(long primaryId, University university) {
-            this.storage.put(primaryId, university);
-      }
+      // Die Methode habe ich anscheinend irgendwann mal implementiert, die macht aber gar nichts.
+//      public void add(long primaryId, University university) {
+//            this.storage.put(primaryId, university);
+//      }
 
       public void resetDatabase() {this.storage.clear();}
 
       private Predicate<University> byNameOfUniversity(String name) {
-            return p -> p.getPartnerUniName().equals(name) || name.isEmpty();
+            return p -> p.getPartnerUniName().equals(name) || name.isEmpty() || p.getPartnerUniName().contains(name);
       }
 }
