@@ -82,4 +82,9 @@ public class Module extends AbstractModel {
       public void setSemesterWhenModuleIsOffered(int semesterWhenModuleIsOffered) {
             this.semesterWhenModuleIsOffered = semesterWhenModuleIsOffered;
       }
+
+      @Override
+      public String toString() {
+            return moduleName + " (" + numberOfCredits + ")" + " semester: " + semesterWhenModuleIsOffered;
+      }
 }

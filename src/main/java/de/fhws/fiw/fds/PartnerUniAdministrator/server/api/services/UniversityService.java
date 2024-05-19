@@ -6,6 +6,8 @@ import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryByModuleN
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryBySearch;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.*;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.*;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.DaoFactory;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.UniversityModuleDAO;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import jakarta.ws.rs.*;
@@ -149,7 +151,11 @@ public class UniversityService extends AbstractJerseyService {
                                                  @PathParam("moduleId") final long moduleId)
       {
             try {
-                  return new DeleteSingleModuleFromUniversity(this.serviceContext, moduleId, universityId).execute();
+                  UniversityModuleDAO ums = DaoFactory.getInstance().getUniversityModuleDAO();
+                  System.out.println(ums.readAllLinked(universityId).getResult());
+                  Response toReturn = new DeleteSingleModuleFromUniversity(this.serviceContext, moduleId, universityId).execute();
+                  System.out.println(ums.readAllLinked(universityId).getResult());
+                  return toReturn;
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
