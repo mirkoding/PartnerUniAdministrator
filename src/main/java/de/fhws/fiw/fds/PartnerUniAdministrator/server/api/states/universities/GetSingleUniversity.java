@@ -41,7 +41,17 @@ public class GetSingleUniversity extends AbstractGetState<Response, University> 
       @Override
       protected void defineTransitionLinks() {
             addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.UPDATE_SINGLE_UNIVERSITY, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.UPDATE_SINGLE_UNIVERSITY, MediaType.APPLICATION_XML, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.DELETE_SINGLE_UNIVERSITY, getAcceptRequestHeader());
-            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.CREATE_MODULE, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.CREATE_AND_LINK_MODULE, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.CREATE_AND_LINK_MODULE, MediaType.APPLICATION_XML, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, MediaType.APPLICATION_XML, getAcceptRequestHeader());
+
+            //TODO Filter Links nochmal überdenken, ob die so passen
+            addLink(UniversityURI.REL_PATH + "?search={SEARCH}", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH + "?search={SEARCH}", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, MediaType.APPLICATION_XML, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, MediaType.APPLICATION_XML, getAcceptRequestHeader());
       }
 }

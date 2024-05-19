@@ -42,5 +42,6 @@ public class PutSingleUniversity extends AbstractPutState<Response, University> 
       @Override
       protected void defineTransitionLinks() {
             addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.GET_SINGLE_UNIVERSITY, MediaType.APPLICATION_JSON, getAcceptRequestHeader(), this.modelToUpdate.getId());
+            addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.GET_SINGLE_UNIVERSITY, MediaType.APPLICATION_XML, getAcceptRequestHeader(), this.modelToUpdate.getId());
       }
 }

@@ -9,6 +9,7 @@ import de.fhws.fiw.fds.sutton.server.api.states.put.AbstractPutRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class PutSingleModuleFromUniversity extends AbstractPutRelationState<Response, Module> {
@@ -20,7 +21,8 @@ public class PutSingleModuleFromUniversity extends AbstractPutRelationState<Resp
 
       @Override
       protected void defineTransitionLinks() {
-
+            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.GET_SINGLE_MODULE, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.GET_SINGLE_MODULE, MediaType.APPLICATION_XML, getAcceptRequestHeader());
       }
 
       @Override

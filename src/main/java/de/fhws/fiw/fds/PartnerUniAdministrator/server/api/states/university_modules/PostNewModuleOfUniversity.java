@@ -22,6 +22,6 @@ public class PostNewModuleOfUniversity extends AbstractPostRelationState<Respons
 
       @Override
       protected void defineTransitionLinks() {
-
+            //TODO herausfinden, ob Location Header genug ist oder ob man noch zusätzlich den Link in den Link-Header setzt
       }
 }
