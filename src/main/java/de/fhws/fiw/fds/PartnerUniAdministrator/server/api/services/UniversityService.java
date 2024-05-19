@@ -151,11 +151,7 @@ public class UniversityService extends AbstractJerseyService {
                                                  @PathParam("moduleId") final long moduleId)
       {
             try {
-                  UniversityModuleDAO ums = DaoFactory.getInstance().getUniversityModuleDAO();
-                  System.out.println(ums.readAllLinked(universityId).getResult());
-                  Response toReturn = new DeleteSingleModuleFromUniversity(this.serviceContext, moduleId, universityId).execute();
-                  System.out.println(ums.readAllLinked(universityId).getResult());
-                  return toReturn;
+                  return new DeleteSingleModuleFromUniversity(this.serviceContext, moduleId, universityId).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());

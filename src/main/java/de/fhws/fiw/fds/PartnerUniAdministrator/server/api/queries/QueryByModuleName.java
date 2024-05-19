@@ -28,6 +28,7 @@ public class QueryByModuleName extends AbstractRelationQuery<Response, Module> {
 
       @Override
       protected CollectionModelResult<Module> doExecuteQuery(SearchParameter searchParameter) {
+            //TODO hier nochmal drüberschauen, ob ich das irgendwie schöner hinbekomme
             if(!moduleName.isEmpty())
                   return DaoFactory.getInstance().getUniversityModuleDAO().readByModuleName(this.primaryId, this.moduleName, searchParameter);
             return DaoFactory.getInstance().getUniversityModuleDAO().readAllLinked(this.primaryId);
