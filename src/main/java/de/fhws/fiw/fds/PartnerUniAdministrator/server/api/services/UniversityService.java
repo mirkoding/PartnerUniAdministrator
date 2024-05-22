@@ -95,7 +95,8 @@ public class UniversityService extends AbstractJerseyService {
                                                @DefaultValue("15") @QueryParam("size") int size)
       {
             try {
-                  return new GetAllModulesFromUniversity(this.serviceContext, universityId, new QueryByModuleName(universityId, moduleName, offset, size)).execute();
+                  return new GetAllModulesFromUniversity(this.serviceContext, universityId,
+                        new QueryByModuleName(universityId, moduleName, offset, size)).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
