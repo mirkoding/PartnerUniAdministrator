@@ -27,11 +27,12 @@ public class UniversityService extends AbstractJerseyService {
       @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
       public Response getUniversities(
             @DefaultValue("") @QueryParam("search") final String search,
+            @DefaultValue("") @QueryParam("order") final String order,
             @DefaultValue("0") @QueryParam("offset") final int offset,
             @DefaultValue("15") @QueryParam("size") final int size)
       {
             try {
-                  return new GetAllUniversities(this.serviceContext, new QueryBySearch<>(search, offset, size)).execute();
+                  return new GetAllUniversities(this.serviceContext, new QueryBySearch<>(search, order, offset, size)).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
