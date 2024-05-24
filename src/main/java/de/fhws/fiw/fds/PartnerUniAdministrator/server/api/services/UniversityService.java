@@ -67,7 +67,9 @@ public class UniversityService extends AbstractJerseyService {
       @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
       public Response updateSingleUniversity(@PathParam("id") final long id, final University universityModel) {
             try {
-                  return new PutSingleUniversity(this.serviceContext, id, universityModel).execute();
+                  if(DaoFactory.getInstance().getUniversityDAO().doesUniversityExist(id))
+                        return new PutSingleUniversity(this.serviceContext, id, universityModel).execute();
+                  else throw new WebApplicationException();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());
@@ -125,7 +127,10 @@ public class UniversityService extends AbstractJerseyService {
                                                    final Module moduleModel)
       {
             try {
-                  return new PostNewModuleOfUniversity(this.serviceContext, universityId, moduleModel).execute();
+                  if(DaoFactory.getInstance().getUniversityDAO().doesUniversityExist(universityId))
+                        return new PostNewModuleOfUniversity(this.serviceContext, universityId, moduleModel).execute();
+                  else
+                        throw new WebApplicationException();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(Response.status(e.getStatus().getCode()).entity(e.getExceptionMessage()).build());

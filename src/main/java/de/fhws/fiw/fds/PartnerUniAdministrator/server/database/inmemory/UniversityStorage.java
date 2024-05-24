@@ -26,6 +26,10 @@ public class UniversityStorage extends AbstractInMemoryStorage<University> imple
 
       public void resetDatabase() {this.storage.clear();}
 
+      public boolean doesUniversityExist(long id) {
+            return this.storage.containsKey(id);
+      }
+
       private Predicate<University> byNameOfUniversity(String name) {
             return p -> p.getPartnerUniName().equals(name) || name.isEmpty() || p.getPartnerUniName().contains(name);
       }
