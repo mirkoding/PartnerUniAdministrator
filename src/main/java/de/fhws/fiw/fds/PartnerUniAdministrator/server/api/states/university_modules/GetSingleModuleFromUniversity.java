@@ -31,10 +31,12 @@ public class GetSingleModuleFromUniversity extends AbstractGetRelationState<Resp
       @Override
       protected SingleModelResult<Module> loadModel() {
             SingleModelResult<Module> module = DaoFactory.getInstance().getModuleDAO().readById(this.requestedId);
+            System.out.println(module.getResult());
             if(isModuleLinkedToThisUniversity()) {
                   module.getResult().setPrimaryId(this.primaryId);
+                  return module;
             }
-            return module;
+            return new SingleModelResult<>();
       }
 
       @Override
