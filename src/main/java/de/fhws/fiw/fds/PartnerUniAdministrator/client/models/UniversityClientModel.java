@@ -1,8 +1,6 @@
 package de.fhws.fiw.fds.PartnerUniAdministrator.client.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import de.fhws.fiw.fds.sutton.client.converters.ClientLinkJsonConverter;
 import de.fhws.fiw.fds.sutton.client.model.AbstractClientModel;
@@ -12,7 +10,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
 
 @XmlRootElement
-public class PartnerUniversityClientModel extends AbstractClientModel {
+public class UniversityClientModel extends AbstractClientModel {
 
       private String partnerUniName;
       private String partnerUniCountry;
@@ -30,9 +28,9 @@ public class PartnerUniversityClientModel extends AbstractClientModel {
       @JsonDeserialize(using = ClientLinkJsonConverter.class)
       private Link module;
 
-      public PartnerUniversityClientModel() {}
+      public UniversityClientModel() {}
 
-      public PartnerUniversityClientModel(
+      public UniversityClientModel(
             String partnerUniName,
             String partnerUniCountry,
             String partnerUniDepartment,
