@@ -3,7 +3,6 @@ package de.fhws.fiw.fds.PartnerUniAdministrator.client.web;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.models.UniversityClientModel;
 import de.fhws.fiw.fds.sutton.client.web.GenericWebClient;
 import de.fhws.fiw.fds.sutton.client.web.WebApiResponse;
-
 import java.io.IOException;
 
 public class UniversityWebClient {
@@ -14,7 +13,7 @@ public class UniversityWebClient {
       }
 
       public UniversityWebResponse getDispatcher(String url) throws IOException {
-            return createResponse(this.client.sendGetSingleRequest(url, UniversityClientModel.class));
+            return createResponse(this.client.sendGetSingleRequest(url));
       }
 
       public UniversityWebResponse getSingleUniversity(String url) throws IOException {

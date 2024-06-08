@@ -27,13 +27,11 @@ public class UniRestClient extends AbstractRestClient {
 
       public void resetDatabase() throws IOException {
             processResponse(this.client.resetDatabaseOnServer(BASE_URL), (response -> {
-                  //TODO find out what to do here
             }));
       }
 
       public void  start() throws IOException {
             processResponse(this.client.getDispatcher(BASE_URL), (response -> {
-                  //TODO find out what to do here
             }));
       }
 
@@ -112,5 +110,9 @@ public class UniRestClient extends AbstractRestClient {
             }));
       }
 
-      //TODO need something more here find out what
+      public static void main(String[] args) throws IOException {
+            UniRestClient uniRestClient = new UniRestClient();
+            uniRestClient.start();
+            System.out.println(uniRestClient.getLastStatusCode());
+      }
 }
