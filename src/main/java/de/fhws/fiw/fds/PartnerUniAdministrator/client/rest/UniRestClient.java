@@ -1,10 +1,12 @@
 package de.fhws.fiw.fds.PartnerUniAdministrator.client.rest;
 
+import com.github.javafaker.Faker;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.models.UniversityClientModel;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.web.UniversityWebClient;
 import de.fhws.fiw.fds.sutton.client.rest2.AbstractRestClient;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,25 +28,25 @@ public class UniRestClient extends AbstractRestClient {
       }
 
       public void resetDatabase() throws IOException {
-            processResponse(this.client.resetDatabaseOnServer(BASE_URL), (response -> {
-            }));
+            processResponse(this.client.resetDatabaseOnServer(BASE_URL), (response) -> {
+            });
       }
 
       public void  start() throws IOException {
-            processResponse(this.client.getDispatcher(BASE_URL), (response -> {
-            }));
+            processResponse(this.client.getDispatcher(BASE_URL), (response) -> {
+            });
       }
 
-      public boolean isCreatePersonAllowed() {
+      public boolean isCreateUniversityAllowed() {
             return isLinkAvailable(CREATE_UNI);
       }
 
       public void createUniversity(UniversityClientModel universityClientModel) throws IOException {
-            if(isCreatePersonAllowed()) {
-                  processResponse(this.client.postNewUniversity(getUrl(CREATE_UNI), universityClientModel), (response -> {
+            if(isCreateUniversityAllowed()) {
+                  processResponse(this.client.postNewUniversity(getUrl(CREATE_UNI), universityClientModel), (response) -> {
                         this.currentUniData = Collections.EMPTY_LIST;
                         this.cursorUniData = 0;
-                  }));
+                  });
             }
             else {
                   throw new IllegalStateException();
@@ -58,7 +60,7 @@ public class UniRestClient extends AbstractRestClient {
       public void getAllUniversities() throws IOException {
             if(isGetAllUniversitiesAllowed()) {
                   processResponse(this.client.getCollectionOfUniversities(getUrl(GET_ALL_UNIS)), (response) -> {
-                        this.currentUniData = Collections.EMPTY_LIST;
+                        this.currentUniData = response.getResponseData().stream().toList();
                         this.cursorUniData = 0;
                   });
             }
@@ -110,9 +112,4 @@ public class UniRestClient extends AbstractRestClient {
             }));
       }
 
-      public static void main(String[] args) throws IOException {
-            UniRestClient uniRestClient = new UniRestClient();
-            uniRestClient.start();
-            System.out.println(uniRestClient.getLastStatusCode());
-      }
 }

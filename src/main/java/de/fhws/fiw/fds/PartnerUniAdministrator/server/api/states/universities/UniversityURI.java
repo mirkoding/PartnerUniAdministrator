@@ -1,6 +1,7 @@
 package de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities;
 
-import de.fhws.fiw.fds.suttondemo.Start;
+
+import de.fhws.fiw.fds.PartnerUniAdministrator.Start;
 
 public interface UniversityURI {
       String PATH_ELEMENT = "universities";

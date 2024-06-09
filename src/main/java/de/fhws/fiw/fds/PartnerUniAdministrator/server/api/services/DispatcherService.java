@@ -32,6 +32,15 @@ public class DispatcherService extends AbstractJerseyService {
       }
 
       @GET
+      @Path("resetdatabase")
+      public Response resetDatabase() {
+            System.out.println("Resetting database");
+            DaoFactory.getInstance().getUniversityDAO().resetDatabase();
+            DaoFactory.getInstance().getUniversityModuleDAO().resetDatabase();
+            return Response.ok().build();
+      }
+
+      @GET
       @Path("initializedatabase")
       @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
       public Response initializeDatabase() {

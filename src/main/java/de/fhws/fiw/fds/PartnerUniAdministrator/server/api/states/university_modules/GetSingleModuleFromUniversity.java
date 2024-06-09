@@ -22,9 +22,7 @@ public class GetSingleModuleFromUniversity extends AbstractGetRelationState<Resp
       @Override
       protected void defineTransitionLinks() {
             addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, MediaType.APPLICATION_XML, getAcceptRequestHeader());
             addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.UPDATE_SINGLE_MODULE, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.UPDATE_SINGLE_MODULE, MediaType.APPLICATION_XML, getAcceptRequestHeader());
             addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.DELETE_LINK_FROM_UNIVERSITY_TO_MODULE, getAcceptRequestHeader());
       }
 

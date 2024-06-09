@@ -7,7 +7,9 @@ import de.fhws.fiw.fds.sutton.client.model.AbstractClientModel;
 import de.fhws.fiw.fds.sutton.client.utils.Link;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @XmlRootElement
 public class UniversityClientModel extends AbstractClientModel {
@@ -19,8 +21,8 @@ public class UniversityClientModel extends AbstractClientModel {
       private String contactPersonName;
       private int amountStudentsToSend;
       private int amountStudentsToReceive;
-      private LocalDateTime startNextSpringSem;
-      private LocalDateTime startNextAutumnSem;
+      private LocalDate startNextSpringSem;
+      private LocalDate startNextAutumnSem;
 
       @JsonDeserialize(using = ClientLinkJsonConverter.class)
       private Link selfLink;
@@ -38,8 +40,8 @@ public class UniversityClientModel extends AbstractClientModel {
             String contactPersonName,
             int amountStudentsToSend,
             int amountStudentsToReceive,
-            LocalDateTime startNextSpringSem,
-            LocalDateTime startNextAutumnSem
+            LocalDate startNextSpringSem,
+            LocalDate startNextAutumnSem
       )
       {
             this.partnerUniName = partnerUniName;
@@ -51,6 +53,22 @@ public class UniversityClientModel extends AbstractClientModel {
             this.amountStudentsToReceive = amountStudentsToReceive;
             this.startNextSpringSem = startNextSpringSem;
             this.startNextAutumnSem = startNextAutumnSem;
+      }
+
+      @Override
+      public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            UniversityClientModel that = (UniversityClientModel) o;
+            return amountStudentsToSend == that.amountStudentsToSend &&
+                  amountStudentsToReceive == that.amountStudentsToReceive &&
+                  Objects.equals(partnerUniName, that.partnerUniName) &&
+                  Objects.equals(partnerUniCountry, that.partnerUniCountry) &&
+                  Objects.equals(partnerUniDepartment, that.partnerUniDepartment) &&
+                  Objects.equals(partnerUniDepartmentURL, that.partnerUniDepartmentURL) &&
+                  Objects.equals(contactPersonName, that.contactPersonName) &&
+                  Objects.equals(startNextSpringSem, that.startNextSpringSem) &&
+                  Objects.equals(startNextAutumnSem, that.startNextAutumnSem);
       }
 
       public int getAmountStudentsToReceive() {
@@ -127,19 +145,19 @@ public class UniversityClientModel extends AbstractClientModel {
             this.selfLink = selfLink;
       }
 
-      public LocalDateTime getStartNextAutumnSem() {
+      public LocalDate getStartNextAutumnSem() {
             return startNextAutumnSem;
       }
 
-      public void setStartNextAutumnSem(LocalDateTime startNextAutumnSem) {
+      public void setStartNextAutumnSem(LocalDate startNextAutumnSem) {
             this.startNextAutumnSem = startNextAutumnSem;
       }
 
-      public LocalDateTime getStartNextSpringSem() {
+      public LocalDate getStartNextSpringSem() {
             return startNextSpringSem;
       }
 
-      public void setStartNextSpringSem(LocalDateTime startNextSpringSem) {
+      public void setStartNextSpringSem(LocalDate startNextSpringSem) {
             this.startNextSpringSem = startNextSpringSem;
       }
 

@@ -148,7 +148,7 @@ public class GenericWebClient<T extends AbstractClientModel> {
      */
     public WebApiResponse<T> sendGetCollectionRequest(final String url,
                                                       final Class<T> clazz) throws IOException {
-        final Request request = new Request.Builder().url(url).get().build();
+        final Request request = new Request.Builder().url(url).get().header("Accept", "application/json").build();
 
         final Response response = this.client.newCall(request).execute();
 
