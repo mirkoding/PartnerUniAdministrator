@@ -40,6 +40,10 @@ public class UniversityWebClient {
             return createResponse(this.client.sendGetSingleRequest(url + "/resetdatabase"));
       }
 
+      public UniversityWebResponse initializeDatabaseOnServer(String url) throws IOException {
+            return createResponse(this.client.sendGetSingleRequest(url + "/initializedatabase"));
+      }
+
       private UniversityWebResponse createResponse(WebApiResponse<UniversityClientModel> response) {
             return new UniversityWebResponse(response.getResponseData(), response.getResponseHeaders(), response.getLastStatusCode());
       }

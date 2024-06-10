@@ -31,6 +31,6 @@ public class UniversityStorage extends AbstractInMemoryStorage<University> imple
       }
 
       private Predicate<University> byNameOfUniversity(String name) {
-            return p -> p.getPartnerUniName().equals(name) || name.isEmpty() || p.getPartnerUniName().contains(name);
+            return p -> p.getPartnerUniName().equals(name) || name.isEmpty() || p.getPartnerUniName().toLowerCase().contains(name.toLowerCase());
       }
 }

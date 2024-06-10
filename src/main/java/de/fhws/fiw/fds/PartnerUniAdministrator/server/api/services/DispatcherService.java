@@ -22,7 +22,7 @@ import java.time.LocalDate;
 public class DispatcherService extends AbstractJerseyService {
 
       @GET
-      public Response getDispatcher() {
+      public Response getDispatcher() { // wurde getestet
             try {
                   return new GetDispatcher(this.serviceContext).execute();
             }
@@ -33,7 +33,7 @@ public class DispatcherService extends AbstractJerseyService {
 
       @GET
       @Path("resetdatabase")
-      public Response resetDatabase() {
+      public Response resetDatabase() { // Wurde getestet
             System.out.println("Resetting database");
             DaoFactory.getInstance().getUniversityDAO().resetDatabase();
             DaoFactory.getInstance().getUniversityModuleDAO().resetDatabase();
@@ -43,7 +43,7 @@ public class DispatcherService extends AbstractJerseyService {
       @GET
       @Path("initializedatabase")
       @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-      public Response initializeDatabase() {
+      public Response initializeDatabase() { // wurde getestet
             System.out.println("Initializing Database");
             University uni1 = new University(
                   "Prof. Dr. Braun",

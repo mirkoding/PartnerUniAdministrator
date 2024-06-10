@@ -22,6 +22,5 @@ public class PostNewUniversity extends AbstractPostState<Response, University> {
 
       @Override
       protected void defineTransitionLinks() {
-
       }
 }

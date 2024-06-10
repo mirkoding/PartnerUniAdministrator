@@ -20,5 +20,6 @@ public class GetDispatcher extends AbstractGetDispatcherState<Response> {
             addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH, UniversityRelTypes.CREATE_UNIVERSITY, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH + "initializeDatabase", "InitializeDatabase", MediaType.APPLICATION_JSON, getAcceptRequestHeader());
       }
 }

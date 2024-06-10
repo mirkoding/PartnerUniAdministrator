@@ -1,12 +1,11 @@
 package de.fhws.fiw.fds.PartnerUniAdministrator.client.rest;
 
-import com.github.javafaker.Faker;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.models.UniversityClientModel;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.web.UniversityWebClient;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.UniversityRelTypes;
 import de.fhws.fiw.fds.sutton.client.rest2.AbstractRestClient;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +28,11 @@ public class UniRestClient extends AbstractRestClient {
 
       public void resetDatabase() throws IOException {
             processResponse(this.client.resetDatabaseOnServer(BASE_URL), (response) -> {
+            });
+      }
+
+      public void initializeDatabase() throws IOException {
+            processResponse(this.client.initializeDatabaseOnServer(BASE_URL), (response) -> {
             });
       }
 
@@ -69,6 +73,28 @@ public class UniRestClient extends AbstractRestClient {
             }
       }
 
+      public void getCollectionOfFilteredUniversities(String search) throws IOException {
+            String url;
+            if((url = getUrl(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER)) == null) {
+                  throw new IllegalStateException();
+            }
+            processResponse(this.client.getCollectionOfUniversities(url.replace("{SEARCH}", search)), (response) -> {
+                  this.currentUniData = response.getResponseData().stream().toList();
+                  this.cursorUniData = 0;
+            });
+      }
+
+      public void getNextPageOfUniversities() throws IOException {
+            String url;
+            if((url = getUrl("next")) == null) {
+                  throw new IllegalStateException();
+            }
+            processResponse(this.client.getCollectionOfUniversities(url), (response) -> {
+                  this.currentUniData = response.getResponseData().stream().toList();
+                  this.cursorUniData = 0;
+            });
+      }
+
       public boolean isGetSingleUniversityAllowed() {
             return !this.currentUniData.isEmpty() || isLocationHeaderAvailable();
       }
@@ -107,7 +133,7 @@ public class UniRestClient extends AbstractRestClient {
 
       public void getSingleUniversity(String url) throws IOException {
             processResponse(this.client.getSingleUniversity(url), (response -> {
-                  this.currentUniData = new LinkedList(response.getResponseData());
+                  this.currentUniData = new LinkedList<>(response.getResponseData());
                   this.cursorUniData = 0;
             }));
       }

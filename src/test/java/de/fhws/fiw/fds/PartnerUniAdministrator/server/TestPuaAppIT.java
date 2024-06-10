@@ -51,6 +51,19 @@ public class TestPuaAppIT {
       }
 
       @Test
+      public void test_initialize_database() throws IOException {
+            client.start();
+            assertTrue(client.getPossibleNextStates().containsKey("InitializeDatabase"));
+
+            client.initializeDatabase();
+            assertEquals(201, client.getLastStatusCode());
+
+            client.start();
+            client.getAllUniversities();
+            assertEquals(15, client.universityData().size()); // pagination default value is 15
+      }
+
+      @Test
       public void test_create_university() throws IOException {
             client.start();
 
@@ -126,5 +139,40 @@ public class TestPuaAppIT {
             client.setPersonCursor(0);
             client.getSingleUniversity();
             assertEquals(200, client.getLastStatusCode());
+      }
+
+      @Test
+      public void test_get_all_universities_filtered_by_name() throws IOException {
+            client.start();
+            assertTrue(client.getPossibleNextStates().containsKey("InitializeDatabase"));
+
+            client.initializeDatabase();
+            assertEquals(201, client.getLastStatusCode());
+            client.start(); // Call for dispatcher to get URL to get and filter all universities
+
+            assertTrue(client.getPossibleNextStates().containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
+            client.getCollectionOfFilteredUniversities("m"); // testing fulltext search
+
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(8, client.universityData().size());
+      }
+
+      @Test
+      public void test_get_all_pagination() throws IOException {
+            client.start();
+            assertTrue(client.getPossibleNextStates().containsKey("InitializeDatabase"));
+
+            client.initializeDatabase();
+            assertEquals(201, client.getLastStatusCode());
+            client.start(); // Call for dispatcher to get URL to get and filter all universities
+
+            assertTrue(client.isGetAllUniversitiesAllowed());
+            client.getAllUniversities();
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(15, client.universityData().size()); // default pagination size
+            assertTrue(client.getPossibleNextStates().containsKey("next")); // isGetNextPageAllowed
+            client.getNextPageOfUniversities();
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(8, client.universityData().size());
       }
 }
