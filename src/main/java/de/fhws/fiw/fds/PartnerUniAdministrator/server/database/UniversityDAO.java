@@ -7,6 +7,7 @@ import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 
 public interface UniversityDAO extends IDatabaseAccessObject<University> {
       CollectionModelResult<University> readByNameOfUniversity(String search, SearchParameter searchParameter);
+      CollectionModelResult<University> readAllUniversities(SearchParameter searchParameter);
       void resetDatabase();
       boolean doesUniversityExist(long id);
 }

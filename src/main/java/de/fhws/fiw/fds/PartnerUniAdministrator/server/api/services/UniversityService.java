@@ -2,6 +2,7 @@ package de.fhws.fiw.fds.PartnerUniAdministrator.server.api.services;
 
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.Module;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.University;
+import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryAllUniversities;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryByModuleName;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryBySearch;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.*;
@@ -32,6 +33,9 @@ public class UniversityService extends AbstractJerseyService {
             @DefaultValue("15") @QueryParam("size") final int size)
       {
             try {
+                  if(search == null || search.isEmpty()) {
+                        return new GetAllUniversities(this.serviceContext, new QueryAllUniversities<>(offset, size)).execute();
+                  }
                   return new GetAllUniversities(this.serviceContext, new QueryBySearch<>(search, order, offset, size)).execute();
             }
             catch(SuttonWebAppException e) {

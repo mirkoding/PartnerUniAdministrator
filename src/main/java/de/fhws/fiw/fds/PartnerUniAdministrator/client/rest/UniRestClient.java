@@ -14,6 +14,7 @@ public class UniRestClient extends AbstractRestClient {
       private static final String BASE_URL = "http://localhost:8080/uni/api1";
       private static final String GET_ALL_UNIS = UniversityRelTypes.GET_ALL_UNIVERSITIES;
       private static final String CREATE_UNI  = UniversityRelTypes.CREATE_UNIVERSITY;
+      private static final String GET_ALL_UNIS_FILTER = UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER;
 
       private List<UniversityClientModel> currentUniData;
       private int cursorUniData = 0;
@@ -76,7 +77,7 @@ public class UniRestClient extends AbstractRestClient {
 
       public void getAllUniversities(int offset, int size) throws IOException {
             if(isGetAllUniversitiesAllowed()) {
-                  String url = handleOffsetSize(getUrl(UniversityRelTypes.GET_ALL_UNIVERSITIES), offset, size);
+                  String url = handleOffsetSize(getUrl(GET_ALL_UNIS), offset, size);
 
                   processResponse(this.client.getCollectionOfUniversities(url), (response) -> {
                         this.currentUniData = response.getResponseData().stream().toList();
@@ -88,9 +89,13 @@ public class UniRestClient extends AbstractRestClient {
             }
       }
 
+      public boolean isGetAllUniversitiesByFilterAllowed() {
+            return isLinkAvailable(GET_ALL_UNIS_FILTER);
+      }
+
       public void getCollectionOfFilteredUniversities(String search, int offset, int size) throws IOException {
             String url;
-            if((url = getUrl(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER)) == null) {
+            if((url = getUrl(GET_ALL_UNIS_FILTER)) == null) {
                   throw new IllegalStateException();
             }
             url = handleOffsetSize(url, offset, size);

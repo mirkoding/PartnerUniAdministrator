@@ -6,7 +6,6 @@ import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.AbstractInMemoryStorage;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.InMemoryPaging;
 import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
-
 import java.util.function.Predicate;
 
 public class UniversityStorage extends AbstractInMemoryStorage<University> implements UniversityDAO {
@@ -19,12 +18,23 @@ public class UniversityStorage extends AbstractInMemoryStorage<University> imple
                   searchParameter.getSize());
       }
 
+      public CollectionModelResult<University> readAllUniversities(SearchParameter searchParameter) {
+            System.out.println("UniversityStorage: offset: " + searchParameter.getOffset() + ", size: " + searchParameter.getSize());
+            return InMemoryPaging.page(
+                  this.readAll(searchParameter),
+                  searchParameter.getOffset(),
+                  searchParameter.getSize()
+            );
+      }
+
       // Die Methode habe ich anscheinend irgendwann mal implementiert, die macht aber gar nichts.
 //      public void add(long primaryId, University university) {
 //            this.storage.put(primaryId, university);
 //      }
 
-      public void resetDatabase() {this.storage.clear();}
+      public void resetDatabase() {
+            deleteAll();
+      }
 
       public boolean doesUniversityExist(long id) {
             return this.storage.containsKey(id);
