@@ -12,8 +12,8 @@ import java.util.List;
 
 public class UniRestClient extends AbstractRestClient {
       private static final String BASE_URL = "http://localhost:8080/uni/api1";
-      private static final String GET_ALL_UNIS = "getAllUniversities";
-      private static final String CREATE_UNI  = "createUniversity";
+      private static final String GET_ALL_UNIS = UniversityRelTypes.GET_ALL_UNIVERSITIES;
+      private static final String CREATE_UNI  = UniversityRelTypes.CREATE_UNIVERSITY;
 
       private List<UniversityClientModel> currentUniData;
       private int cursorUniData = 0;
@@ -63,7 +63,8 @@ public class UniRestClient extends AbstractRestClient {
 
       public void getAllUniversities() throws IOException {
             if(isGetAllUniversitiesAllowed()) {
-                  processResponse(this.client.getCollectionOfUniversities(getUrl(GET_ALL_UNIS)), (response) -> {
+                  String url = getUrl(GET_ALL_UNIS);
+                  processResponse(this.client.getCollectionOfUniversities(url.substring(0, url.indexOf('?'))), (response) -> {
                         this.currentUniData = response.getResponseData().stream().toList();
                         this.cursorUniData = 0;
                   });
@@ -73,12 +74,28 @@ public class UniRestClient extends AbstractRestClient {
             }
       }
 
-      public void getCollectionOfFilteredUniversities(String search) throws IOException {
+      public void getAllUniversities(int offset, int size) throws IOException {
+            if(isGetAllUniversitiesAllowed()) {
+                  String url = handleOffsetSize(getUrl(UniversityRelTypes.GET_ALL_UNIVERSITIES), offset, size);
+
+                  processResponse(this.client.getCollectionOfUniversities(url), (response) -> {
+                        this.currentUniData = response.getResponseData().stream().toList();
+                        this.cursorUniData = 0;
+                  });
+            }
+            else {
+                  throw new IllegalStateException();
+            }
+      }
+
+      public void getCollectionOfFilteredUniversities(String search, int offset, int size) throws IOException {
             String url;
             if((url = getUrl(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER)) == null) {
                   throw new IllegalStateException();
             }
-            processResponse(this.client.getCollectionOfUniversities(url.replace("{SEARCH}", search)), (response) -> {
+            url = handleOffsetSize(url, offset, size);
+            processResponse(this.client.getCollectionOfUniversities(url.replace("{SEARCH}", search)),
+                  (response) -> {
                   this.currentUniData = response.getResponseData().stream().toList();
                   this.cursorUniData = 0;
             });
@@ -95,6 +112,31 @@ public class UniRestClient extends AbstractRestClient {
             });
       }
 
+      private String handleOffsetSize(String template, int offset, int size) throws IOException{
+            // handling search param when offset and size are both 0
+            if(offset == 0 && size == 0 && !template.contains("search")) {
+                  template = template.substring(0, template.indexOf('?'));
+            }
+            else if(offset == 0 && size == 0 && template.contains("search")) {
+                  template = template.substring(0, template.indexOf('&'));
+            }
+
+            if(offset != 0 && size != 0) {
+                  template = template.replace("{SIZE}", Integer.toString(size))
+                        .replace("{OFFSET}", Integer.toString(offset));
+            }
+            else if(offset != 0) {
+                  template = template.replace("{OFFSET}", Integer.toString(offset))
+                        .replace("&size={SIZE}", "");
+            }
+            else {
+                  template = template.replace("offset={OFFSET}", "")
+                        .replace("&size={SIZE}", "size="+Integer.toString(size));
+            }
+            if(template.endsWith("?")) template = template.substring(0, template.length()-1);
+            return template;
+      }
+
       public boolean isGetSingleUniversityAllowed() {
             return !this.currentUniData.isEmpty() || isLocationHeaderAvailable();
       }
@@ -106,7 +148,7 @@ public class UniRestClient extends AbstractRestClient {
             return this.currentUniData;
       }
 
-      public void setPersonCursor(int index) {
+      public void setUniCursor(int index) {
             if(0 <= index && index < this.currentUniData.size()) {
                   this.cursorUniData = index;
             }

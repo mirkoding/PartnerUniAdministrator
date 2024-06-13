@@ -136,7 +136,7 @@ public class TestPuaAppIT {
             assertEquals(200, client.getLastStatusCode());
             assertEquals(5, client.universityData().size());
 
-            client.setPersonCursor(0);
+            client.setUniCursor(0);
             client.getSingleUniversity();
             assertEquals(200, client.getLastStatusCode());
       }
@@ -151,7 +151,7 @@ public class TestPuaAppIT {
             client.start(); // Call for dispatcher to get URL to get and filter all universities
 
             assertTrue(client.getPossibleNextStates().containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
-            client.getCollectionOfFilteredUniversities("m"); // testing fulltext search
+            client.getCollectionOfFilteredUniversities("m", 0, 0); // testing fulltext search
 
             assertEquals(200, client.getLastStatusCode());
             assertEquals(8, client.universityData().size());
@@ -174,5 +174,51 @@ public class TestPuaAppIT {
             client.getNextPageOfUniversities();
             assertEquals(200, client.getLastStatusCode());
             assertEquals(8, client.universityData().size());
+      }
+
+      // by now the dispatcher should be fully tested
+
+      @Test
+      public void test_get_all_pagination_with_custom_size() throws IOException {
+            client.start();
+            assertTrue(client.getPossibleNextStates().containsKey("InitializeDatabase"));
+            client.initializeDatabase();
+            assertEquals(201, client.getLastStatusCode());
+            client.start();
+            assertTrue(client.getPossibleNextStates().containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
+            client.getAllUniversities(0, 5);
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(5, client.universityData().size());
+      }
+
+      @Test
+      public void test_get_all_pagination_with_custom_offset() throws IOException {
+            client.start();
+            assertTrue(client.getPossibleNextStates().containsKey("InitializeDatabase"));
+            client.initializeDatabase();
+            assertEquals(201, client.getLastStatusCode());
+
+            client.start();
+            assertTrue(client.getPossibleNextStates().containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
+            client.getAllUniversities(5, 0);
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(10, client.universityData().size()); // 10 because size is 15 by default
+
+            client.setUniCursor(0);
+            client.getSingleUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            UniversityClientModel receivedUni = client.universityData().getFirst(); // received uni should be uni5 from initialize db method
+            UniversityClientModel uni5 = new UniversityClientModel(
+                  "HM",
+                  "Germany",
+                  "Computer Science",
+                  "www.jmu.bin.de",
+                  "Prof. Dr. Fertig",
+                  10,
+                  10,
+                  LocalDate.of(2025, 2, 1),
+                  LocalDate.of(2024, 9, 1)
+            );
+            assertEquals(uni5, receivedUni);
       }
 }
