@@ -34,7 +34,7 @@ public class UniversityService extends AbstractJerseyService {
       {
             try {
                   if(search == null || search.isEmpty()) {
-                        return new GetAllUniversities(this.serviceContext, new QueryAllUniversities<>(offset, size)).execute();
+                        return new GetAllUniversities(this.serviceContext, new QueryAllUniversities<>(order, offset, size)).execute();
                   }
                   return new GetAllUniversities(this.serviceContext, new QueryBySearch<>(search, order, offset, size)).execute();
             }

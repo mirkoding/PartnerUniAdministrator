@@ -4,7 +4,6 @@ import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.University;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.UniversityDAO;
 import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.AbstractInMemoryStorage;
-import de.fhws.fiw.fds.sutton.server.database.inmemory.InMemoryPaging;
 import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 import java.util.function.Predicate;
 
@@ -12,19 +11,12 @@ public class UniversityStorage extends AbstractInMemoryStorage<University> imple
 
       @Override
       public CollectionModelResult<University> readByNameOfUniversity(String name, SearchParameter searchParameter) {
-            return InMemoryPaging.page(
-                  this.readAllByPredicate(byNameOfUniversity(name), searchParameter),
-                  searchParameter.getOffset(),
-                  searchParameter.getSize());
+            return this.readAllByPredicate(
+                  byNameOfUniversity(name), searchParameter);
       }
 
       public CollectionModelResult<University> readAllUniversities(SearchParameter searchParameter) {
-            System.out.println("UniversityStorage: offset: " + searchParameter.getOffset() + ", size: " + searchParameter.getSize());
-            return InMemoryPaging.page(
-                  this.readAll(searchParameter),
-                  searchParameter.getOffset(),
-                  searchParameter.getSize()
-            );
+            return this.readAll(searchParameter);
       }
 
       // Die Methode habe ich anscheinend irgendwann mal implementiert, die macht aber gar nichts.

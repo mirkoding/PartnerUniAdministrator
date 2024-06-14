@@ -36,17 +36,10 @@ public class InMemoryPaging {
     }
 
     private static <T extends AbstractModel> List<T> page(final Collection<T> result, int offset, int size) {
-        System.out.println("HHHHHHHHHHHHHHHHHHHHHHH");
-        System.out.println("Result size: " + result.size());
-        System.out.println("Offset: " + offset);
-        System.out.println("Size: " + size);
         if (offset >= result.size()) {
             offset = Math.max(0, result.size() - size);
         }
-        System.out.println("Result size: " + result.size());
-        System.out.println("Offset: " + offset);
-        System.out.println("Size: " + size);
 
-        return result.stream().skip(offset).limit(size).collect(Collectors.toList());
+          return result.stream().skip(offset).limit(size).collect(Collectors.toList());
     }
 }

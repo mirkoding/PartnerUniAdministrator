@@ -12,9 +12,13 @@ import java.util.List;
 
 public class UniRestClient extends AbstractRestClient {
       private static final String BASE_URL = "http://localhost:8080/uni/api1";
-      private static final String GET_ALL_UNIS = UniversityRelTypes.GET_ALL_UNIVERSITIES;
-      private static final String CREATE_UNI  = UniversityRelTypes.CREATE_UNIVERSITY;
-      private static final String GET_ALL_UNIS_FILTER = UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER;
+      private static final String GET_ALL_UNIS = "getAllUniversities";
+      private static final String GET_ALL_UNIS_ASC = "getAllUniversitiesAscending";
+      private static final String GET_ALL_UNIS_DSC = "getAllUniversitiesDescending";
+      private static final String CREATE_UNI  = "createUniversity";
+      private static final String GET_ALL_UNIS_FILTER = "getFilteredUniversities";
+      private static final String GET_ALL_UNIS_FILTER_ASCENDING = "getFilteredUniversitiesAscending";
+      private static final String GET_ALL_UNIS_FILTER_DESCENDING = "getFilteredUniversitiesDescending";
 
       private List<UniversityClientModel> currentUniData;
       private int cursorUniData = 0;
@@ -64,8 +68,7 @@ public class UniRestClient extends AbstractRestClient {
 
       public void getAllUniversities() throws IOException {
             if(isGetAllUniversitiesAllowed()) {
-                  String url = getUrl(GET_ALL_UNIS);
-                  processResponse(this.client.getCollectionOfUniversities(url.substring(0, url.indexOf('?'))), (response) -> {
+                  processResponse(this.client.getCollectionOfUniversities(getUrl(GET_ALL_UNIS)), (response) -> {
                         this.currentUniData = response.getResponseData().stream().toList();
                         this.cursorUniData = 0;
                   });
@@ -75,30 +78,52 @@ public class UniRestClient extends AbstractRestClient {
             }
       }
 
-      public void getAllUniversities(int offset, int size) throws IOException {
-            if(isGetAllUniversitiesAllowed()) {
-                  String url = handleOffsetSize(getUrl(GET_ALL_UNIS), offset, size);
-
-                  processResponse(this.client.getCollectionOfUniversities(url), (response) -> {
-                        this.currentUniData = response.getResponseData().stream().toList();
-                        this.cursorUniData = 0;
-                  });
+      public void getAllUniversitiesOrdered(char order) throws IOException {
+            String url = null;
+            if(order == '+') {
+                  url = getUrl(GET_ALL_UNIS_ASC);
             }
-            else {
+            else if(order == '-') {
+                  url = getUrl(GET_ALL_UNIS_DSC);
+            }
+            if(url == null) {
                   throw new IllegalStateException();
             }
+
+            processResponse(this.client.getCollectionOfUniversities(url), (response) -> {
+                  this.currentUniData = response.getResponseData().stream().toList();
+                  this.cursorUniData = 0;
+            });
       }
 
       public boolean isGetAllUniversitiesByFilterAllowed() {
             return isLinkAvailable(GET_ALL_UNIS_FILTER);
       }
 
-      public void getCollectionOfFilteredUniversities(String search, int offset, int size) throws IOException {
+      public void getCollectionOfFilteredUniversities(String search) throws IOException {
             String url;
             if((url = getUrl(GET_ALL_UNIS_FILTER)) == null) {
                   throw new IllegalStateException();
             }
-            url = handleOffsetSize(url, offset, size);
+            processResponse(this.client.getCollectionOfUniversities(url.replace("{SEARCH}", search)),
+                  (response) -> {
+                  this.currentUniData = response.getResponseData().stream().toList();
+                  this.cursorUniData = 0;
+            });
+      }
+
+      public void getCollectionOfFilteredUniversitiesOrdered(String search, char order) throws IOException {
+            String url = null;
+            if(order == '+') {
+                  url = getUrl(GET_ALL_UNIS_FILTER_ASCENDING);
+            }
+            else if(order == '-') {
+                  url = getUrl(GET_ALL_UNIS_FILTER_DESCENDING);
+            }
+            if(url == null) {
+                  throw new IllegalStateException();
+            }
+
             processResponse(this.client.getCollectionOfUniversities(url.replace("{SEARCH}", search)),
                   (response) -> {
                   this.currentUniData = response.getResponseData().stream().toList();
@@ -117,30 +142,6 @@ public class UniRestClient extends AbstractRestClient {
             });
       }
 
-      private String handleOffsetSize(String template, int offset, int size) throws IOException{
-            // handling search param when offset and size are both 0
-            if(offset == 0 && size == 0 && !template.contains("search")) {
-                  template = template.substring(0, template.indexOf('?'));
-            }
-            else if(offset == 0 && size == 0 && template.contains("search")) {
-                  template = template.substring(0, template.indexOf('&'));
-            }
-
-            if(offset != 0 && size != 0) {
-                  template = template.replace("{SIZE}", Integer.toString(size))
-                        .replace("{OFFSET}", Integer.toString(offset));
-            }
-            else if(offset != 0) {
-                  template = template.replace("{OFFSET}", Integer.toString(offset))
-                        .replace("&size={SIZE}", "");
-            }
-            else {
-                  template = template.replace("offset={OFFSET}", "")
-                        .replace("&size={SIZE}", "size="+Integer.toString(size));
-            }
-            if(template.endsWith("?")) template = template.substring(0, template.length()-1);
-            return template;
-      }
 
       public boolean isGetSingleUniversityAllowed() {
             return !this.currentUniData.isEmpty() || isLocationHeaderAvailable();
@@ -183,6 +184,22 @@ public class UniRestClient extends AbstractRestClient {
                   this.currentUniData = new LinkedList<>(response.getResponseData());
                   this.cursorUniData = 0;
             }));
+      }
+
+      public void updateUniversity(UniversityClientModel updatedUniversity) throws IOException {
+            processResponse(this.client.putUniversity(
+                  this.currentUniData.get(this.cursorUniData).getSelfLink().getUrl(), updatedUniversity),
+                  (response) -> {
+                        this.currentUniData = Collections.EMPTY_LIST;
+                        this.cursorUniData = 0;
+            });
+      }
+
+      public void deleteUniversity() throws IOException {
+            processResponse(this.client.deleteUniversity(this.currentUniData.get(this.cursorUniData).getSelfLink().getUrl()), response -> {
+                  this.currentUniData = Collections.EMPTY_LIST;
+                  this.cursorUniData = 0;
+            });
       }
 
 }

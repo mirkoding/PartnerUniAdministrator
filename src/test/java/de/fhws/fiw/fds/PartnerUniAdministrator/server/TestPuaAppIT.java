@@ -60,7 +60,9 @@ public class TestPuaAppIT {
 
             client.start();
             client.getAllUniversities();
-            assertEquals(15, client.universityData().size()); // pagination default value is 15
+
+            // pagination default value is 15
+            assertEquals(15, client.universityData().size());
       }
 
       @Test
@@ -148,11 +150,12 @@ public class TestPuaAppIT {
 
             client.initializeDatabase();
             assertEquals(201, client.getLastStatusCode());
-            client.start(); // Call for dispatcher to get URL to get and filter all universities
+            client.start();
 
-            assertTrue(client.getPossibleNextStates().containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
-            client.getCollectionOfFilteredUniversities("m", 0, 0); // testing fulltext search
+            assertTrue(client.isGetAllUniversitiesByFilterAllowed());
 
+            // testing fulltext search
+            client.getCollectionOfFilteredUniversities("m");
             assertEquals(200, client.getLastStatusCode());
             assertEquals(8, client.universityData().size());
       }
@@ -164,61 +167,81 @@ public class TestPuaAppIT {
 
             client.initializeDatabase();
             assertEquals(201, client.getLastStatusCode());
-            client.start(); // Call for dispatcher to get URL to get and filter all universities
+            client.start();
 
             assertTrue(client.isGetAllUniversitiesAllowed());
             client.getAllUniversities();
             assertEquals(200, client.getLastStatusCode());
-            assertEquals(15, client.universityData().size()); // default pagination size
-            assertTrue(client.getPossibleNextStates().containsKey("next")); // isGetNextPageAllowed
+
+            // default pagination size
+            assertEquals(15, client.universityData().size());
+
+            // isGetNextPageAllowed
+            assertTrue(client.getPossibleNextStates().containsKey("next"));
             client.getNextPageOfUniversities();
             assertEquals(200, client.getLastStatusCode());
+
+            // Initializing the db populates it with 23 records
+            // Since the first page contains 15 records, the second page is expected to have 8 records
             assertEquals(8, client.universityData().size());
       }
 
-      // by now the dispatcher should be fully tested
-
       @Test
-      public void test_get_all_pagination_with_custom_size() throws IOException {
+      public void test_ordering_of_search_ascending() throws IOException {
             client.start();
-            assertTrue(client.getPossibleNextStates().containsKey("InitializeDatabase"));
             client.initializeDatabase();
-            assertEquals(201, client.getLastStatusCode());
             client.start();
-            assertTrue(client.getPossibleNextStates().containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
-            client.getAllUniversities(0, 5);
+            client.getCollectionOfFilteredUniversitiesOrdered("ü", '+');
             assertEquals(200, client.getLastStatusCode());
-            assertEquals(5, client.universityData().size());
-      }
-
-      @Test
-      public void test_get_all_pagination_with_custom_offset() throws IOException {
-            client.start();
-            assertTrue(client.getPossibleNextStates().containsKey("InitializeDatabase"));
-            client.initializeDatabase();
-            assertEquals(201, client.getLastStatusCode());
-
-            client.start();
-            assertTrue(client.getPossibleNextStates().containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
-            client.getAllUniversities(5, 0);
-            assertEquals(200, client.getLastStatusCode());
-            assertEquals(10, client.universityData().size()); // 10 because size is 15 by default
+            assertEquals(3, client.universityData().size());
 
             client.setUniCursor(0);
             client.getSingleUniversity();
             assertEquals(200, client.getLastStatusCode());
-            UniversityClientModel receivedUni = client.universityData().getFirst(); // received uni should be uni5 from initialize db method
-            UniversityClientModel uni5 = new UniversityClientModel(
-                  "HM",
+            UniversityClientModel receivedUni = client.universityData().getFirst();
+
+            UniversityClientModel expectedUni = new UniversityClientModel(
+                  "Hochschule für Wirtschaft und Recht Berlin",
                   "Germany",
                   "Computer Science",
                   "www.jmu.bin.de",
-                  "Prof. Dr. Fertig",
+                  "Prof. Dr. Rot",
                   10,
                   10,
                   LocalDate.of(2025, 2, 1),
                   LocalDate.of(2024, 9, 1)
             );
-            assertEquals(uni5, receivedUni);
+
+            assertEquals(expectedUni, receivedUni);
       }
+
+      @Test
+      public void test_ordering_of_search_descending() throws IOException {
+            client.start();
+            client.initializeDatabase();
+            client.start();
+            client.getCollectionOfFilteredUniversitiesOrdered("ü", '-');
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(3, client.universityData().size());
+
+            client.setUniCursor(0);
+            client.getSingleUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            UniversityClientModel receivedUni = client.universityData().getFirst();
+            UniversityClientModel expectedUni = new UniversityClientModel(
+                  "Berliner Hochschule für Technik",
+                  "Germany",
+                  "Computer Science",
+                  "www.jmu.bin.de",
+                  "Prof. Dr. Biedermann",
+                  10,
+                  10,
+                  LocalDate.of(2025, 2, 1),
+                  LocalDate.of(2024, 9, 1)
+            );
+
+            assertEquals(expectedUni, receivedUni);
+      }
+
+
 }
