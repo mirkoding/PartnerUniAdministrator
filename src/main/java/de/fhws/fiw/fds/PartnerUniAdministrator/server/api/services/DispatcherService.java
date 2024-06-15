@@ -37,6 +37,7 @@ public class DispatcherService extends AbstractJerseyService {
             System.out.println("Resetting database");
             DaoFactory.getInstance().getUniversityDAO().resetDatabase();
             DaoFactory.getInstance().getUniversityModuleDAO().resetDatabase();
+            DaoFactory.getInstance().getModuleDAO().resetDatabase();
             return Response.ok().build();
       }
 

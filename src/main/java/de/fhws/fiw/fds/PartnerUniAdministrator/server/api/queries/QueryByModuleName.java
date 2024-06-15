@@ -9,8 +9,7 @@ import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 import jakarta.ws.rs.core.Response;
 
 public class QueryByModuleName extends AbstractRelationQuery<Response, Module> {
-
-      private String moduleName;
+      private final String moduleName;
 
       public QueryByModuleName(long primaryId, String moduleName, int offset, int size) {
             super(primaryId);
@@ -22,13 +21,8 @@ public class QueryByModuleName extends AbstractRelationQuery<Response, Module> {
             return moduleName;
       }
 
-      public void setModuleName(String moduleName) {
-            this.moduleName = moduleName;
-      }
-
       @Override
       protected CollectionModelResult<Module> doExecuteQuery(SearchParameter searchParameter) {
-            //TODO hier nochmal drüberschauen, ob ich das irgendwie schöner hinbekomme
             if(!moduleName.isEmpty())
                   return DaoFactory.getInstance().getUniversityModuleDAO().readByModuleName(this.primaryId, this.moduleName, searchParameter);
             return DaoFactory.getInstance().getUniversityModuleDAO().readAllLinked(this.primaryId);

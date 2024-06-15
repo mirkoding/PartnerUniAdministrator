@@ -19,7 +19,7 @@ public class GetDispatcher extends AbstractGetDispatcherState<Response> {
       protected void defineTransitionLinks() {
             addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH + "?order=ascending", UniversityRelTypes.GET_ALL_UNIVERSITIES_ASCENDING, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityURI.REL_PATH + "order=descending", UniversityRelTypes.GET_ALL_UNIVERSITIES_DESCENDING, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH + "?order=descending", UniversityRelTypes.GET_ALL_UNIVERSITIES_DESCENDING, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}&order=ascending", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_ASCENDING, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}&order=descending", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_DESCENDING, MediaType.APPLICATION_JSON, getAcceptRequestHeader());

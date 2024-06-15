@@ -29,7 +29,7 @@ public class DeleteSingleUniversity extends AbstractDeleteState<Response, Univer
 
       @Override
       protected void defineTransitionLinks() {
-            addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, getAcceptRequestHeader());
       }
 
 

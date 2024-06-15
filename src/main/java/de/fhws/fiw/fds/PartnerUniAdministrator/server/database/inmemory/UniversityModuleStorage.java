@@ -37,7 +37,9 @@ public class UniversityModuleStorage extends AbstractInMemoryRelationStorage<Mod
       }
 
       @Override
-      public void resetDatabase() {}
+      public void resetDatabase() {
+            moduleStorage.resetDatabase();
+      }
 
       @Override
       public void initializeDatabase() {}

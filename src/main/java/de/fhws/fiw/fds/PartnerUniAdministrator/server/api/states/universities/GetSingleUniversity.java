@@ -44,8 +44,6 @@ public class GetSingleUniversity extends AbstractGetState<Response, University> 
             addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.DELETE_SINGLE_UNIVERSITY, getAcceptRequestHeader(), this.requestedId);
             addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.CREATE_AND_LINK_MODULE, getAcceptRequestHeader(), this.requestedId);
             addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, getAcceptRequestHeader(), this.requestedId);
-
-            //TODO Filter Links nochmal überdenken, ob die so passen
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, getAcceptRequestHeader());
       }

@@ -18,7 +18,7 @@ public class Module extends AbstractModel {
       private int numberOfCredits;
 
       @SecondarySelfLink(
-            primaryPathElement = "partnerUniversities",
+            primaryPathElement = "universities",
             secondaryPathElement = "modules"
       )
       private transient Link selfLinkOnSecond;

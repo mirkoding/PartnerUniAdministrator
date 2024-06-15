@@ -32,7 +32,7 @@ public class University extends AbstractModel {
 
       @SuttonLink(
             value = "universities/${id}/modules",
-            rel = "getModulesOfPartnerUniversities"
+            rel = "getModulesOfUniversities"
       )
       private transient Link module;
 
