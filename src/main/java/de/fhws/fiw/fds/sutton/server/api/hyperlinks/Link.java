@@ -1,9 +1,12 @@
 package de.fhws.fiw.fds.sutton.server.api.hyperlinks;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The {@link Link} class represents a hypermedia link. It encapsulates the href, rel,
  * and type attributes that define the characteristics of a hyperlink.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Link {
 
     private String href;

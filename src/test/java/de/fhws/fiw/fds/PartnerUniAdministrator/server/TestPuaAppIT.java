@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestPuaAppIT {
       final private Faker faker = new Faker();
@@ -340,6 +339,27 @@ public class TestPuaAppIT {
             assertEquals(1, this.client.universityData().size());
       }
 
+      @Test
+      public void test_delete_university_url_from_location_header() throws IOException {
+            client.start();
+            client.createUniversity(testUni);
+            assertEquals(201, client.getLastStatusCode());
+            client.deleteUniversity();
+            assertEquals(204, client.getLastStatusCode());
+      }
+
+      @Test
+      public void test_delete_university_url_from_hateoas() throws IOException {
+            client.start();
+            client.createUniversity(testUni);
+            assertEquals(201, client.getLastStatusCode());
+
+            client.getSingleUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            client.deleteUniversity();
+            assertEquals(204, client.getLastStatusCode());
+      }
+
 
       // relation tests
 
@@ -430,5 +450,103 @@ public class TestPuaAppIT {
 
             ModuleClientModel receivedModule = client.moduleData().getFirst();
             assertEquals(expectedModule, receivedModule);
+      }
+
+      @Test
+      public void test_create_and_update_module_of_university() throws IOException {
+            client.start();
+            assertTrue(client.isCreateUniversityAllowed());
+            client.createUniversity(testUni);
+            assertEquals(201, client.getLastStatusCode());
+
+            testModule.setModuleName("Foundations of Distributed Systems");
+            testModule.setSemesterWhenModuleIsOffered(4);
+            testModule.setNumberOfCredits(5);
+
+            client.getSingleUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            client.setUniCursor(0);
+            client.createAndLinkModuleToUniversity(testModule);
+            assertEquals(201, client.getLastStatusCode());
+
+            client.getSingleModuleOfUniversity();
+            assertEquals(200, client.getLastStatusCode());
+
+            ModuleClientModel receivedModule = client.moduleData().getFirst();
+            assertEquals(testModule, receivedModule);
+
+            ModuleClientModel updatedModule = receivedModule;
+            updatedModule.setModuleName("Foundations of Theoretical Computer Science");
+
+            client.start();
+            client.getAllUniversities();
+            client.setUniCursor(0);
+            client.getSingleUniversity();
+            client.setModuleCursor(0);
+            client.getSingleModuleOfUniversity();
+            client.updateModuleOfUniversity(updatedModule);
+            assertEquals(204, client.getLastStatusCode());
+
+            client.getSingleModuleOfUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            ModuleClientModel receivedModule2 = client.moduleData().getFirst();
+            assertEquals("Foundations of Theoretical Computer Science", receivedModule2.getModuleName());
+
+      }
+
+      @Test
+      public void test_create_and_delete_module_of_university() throws IOException {
+            client.start();
+            assertTrue(client.isCreateUniversityAllowed());
+            client.createUniversity(testUni);
+            assertEquals(201, client.getLastStatusCode());
+            client.getSingleUniversity();
+            assertEquals(200, client.getLastStatusCode());
+
+            for(int i=0; i<5; i++) {
+                  testModule = new ModuleClientModel();
+                  testModule.setModuleName(faker.educator().course());
+                  testModule.setSemesterWhenModuleIsOffered(i);
+                  testModule.setNumberOfCredits(faker.number().numberBetween(1, 7));
+
+                  client.start();
+                  client.getAllUniversities();
+                  client.setUniCursor(0);
+                  client.getSingleUniversity();
+                  client.createAndLinkModuleToUniversity(testModule);
+                  assertEquals(201, client.getLastStatusCode());
+            }
+
+            client.start();
+            client.getAllUniversities();
+            assertEquals(200, client.getLastStatusCode());
+            client.setUniCursor(0);
+            client.getSingleUniversity();
+            client.getAllModulesOfUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(5, this.client.moduleData().size());
+
+            client.setModuleCursor(0);
+            client.getSingleModuleOfUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            client.deleteModuleOfUniversity();
+            assertEquals(204, client.getLastStatusCode());
+            client.getAllModulesOfUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(4, this.client.moduleData().size());
+      }
+
+      @Test
+      public void test_delete_module_of_university_url_from_location_header() throws IOException {
+            client.start();
+            client.createUniversity(testUni);
+            client.getSingleUniversity();
+            client.createAndLinkModuleToUniversity(testModule);
+            assertEquals(201, client.getLastStatusCode());
+            client.deleteModuleOfUniversity();
+            assertEquals(204, client.getLastStatusCode());
+            assertThrows(IllegalStateException.class, () -> {
+                  client.moduleData();
+            });
       }
 }

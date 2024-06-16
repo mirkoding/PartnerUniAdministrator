@@ -22,10 +22,9 @@ public class GetAllModulesFromUniversity extends AbstractGetCollectionRelationSt
 
       @Override
       protected void defineTransitionLinks() {
-            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES_BY_FILTER, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.GET_SINGLE_MODULE, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.CREATE_AND_LINK_MODULE, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.GET_SINGLE_UNIVERSITY, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES_BY_FILTER, getAcceptRequestHeader(), this.primaryId);
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.CREATE_AND_LINK_MODULE, getAcceptRequestHeader(), this.primaryId);
+            addLink(UniversityURI.REL_PATH_ID, UniversityRelTypes.GET_SINGLE_UNIVERSITY, getAcceptRequestHeader(), this.primaryId);
       }
 
 }

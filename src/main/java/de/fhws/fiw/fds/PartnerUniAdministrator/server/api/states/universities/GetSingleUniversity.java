@@ -11,7 +11,6 @@ import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.get.AbstractGetState;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class GetSingleUniversity extends AbstractGetState<Response, University> {
@@ -45,6 +44,8 @@ public class GetSingleUniversity extends AbstractGetState<Response, University> 
             addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.CREATE_AND_LINK_MODULE, getAcceptRequestHeader(), this.requestedId);
             addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, getAcceptRequestHeader(), this.requestedId);
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH + "?search={SEARCH}&order=ascending", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_ASCENDING, getAcceptRequestHeader());
+            addLink(UniversityURI.REL_PATH + "?search={SEARCH}&order=descending", UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_DESCENDING, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH, UniversityRelTypes.GET_ALL_UNIVERSITIES, getAcceptRequestHeader());
       }
 }

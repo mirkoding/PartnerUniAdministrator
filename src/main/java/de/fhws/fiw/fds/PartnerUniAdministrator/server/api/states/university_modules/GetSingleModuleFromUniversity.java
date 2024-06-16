@@ -9,7 +9,6 @@ import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.get.AbstractGetRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class GetSingleModuleFromUniversity extends AbstractGetRelationState<Response, Module> {
@@ -21,15 +20,14 @@ public class GetSingleModuleFromUniversity extends AbstractGetRelationState<Resp
 
       @Override
       protected void defineTransitionLinks() {
-            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.UPDATE_SINGLE_MODULE, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
-            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.DELETE_LINK_FROM_UNIVERSITY_TO_MODULE, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, getAcceptRequestHeader(), this.primaryId);
+            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.UPDATE_SINGLE_MODULE, getAcceptRequestHeader(), this.primaryId, this.requestedId);
+            addLink(UniversityModuleURI.REL_PATH_ID, UniversityModuleRelTypes.DELETE_LINK_FROM_UNIVERSITY_TO_MODULE, getAcceptRequestHeader(), this.primaryId, this.requestedId);
       }
 
       @Override
       protected SingleModelResult<Module> loadModel() {
             SingleModelResult<Module> module = DaoFactory.getInstance().getModuleDAO().readById(this.requestedId);
-            System.out.println(module.getResult());
             if(isModuleLinkedToThisUniversity()) {
                   module.getResult().setPrimaryId(this.primaryId);
                   return module;

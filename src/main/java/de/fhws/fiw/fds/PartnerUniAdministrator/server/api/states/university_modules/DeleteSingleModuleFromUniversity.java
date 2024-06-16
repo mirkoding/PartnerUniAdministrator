@@ -7,7 +7,6 @@ import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.delete.AbstractDeleteRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
-import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 public class DeleteSingleModuleFromUniversity extends AbstractDeleteRelationState<Response, Module> {
@@ -19,7 +18,7 @@ public class DeleteSingleModuleFromUniversity extends AbstractDeleteRelationStat
 
       @Override
       protected void defineTransitionLinks() {
-            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, MediaType.APPLICATION_JSON, getAcceptRequestHeader());
+            addLink(UniversityModuleURI.REL_PATH, UniversityModuleRelTypes.GET_ALL_LINKED_MODULES, getAcceptRequestHeader(), this.primaryId);
       }
 
       @Override

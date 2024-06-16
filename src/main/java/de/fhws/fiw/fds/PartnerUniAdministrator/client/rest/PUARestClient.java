@@ -26,6 +26,9 @@ public class PUARestClient extends AbstractRestClient {
 
       private static final String CREATE_MODULE = "createModuleOfUniversity";
       private static final String GET_ALL_LINKED_MODULES = "getAllModulesOfUniversity";
+      private static final String GET_SINGLE_MODULE = "getModuleOfUniversity";
+      private static final String UPDATE_MODULE = "updateModuleOfUniversity";
+      private static final String DELETE_MODULE = "unlinkUniversityToModule";
 
       private List<UniversityClientModel> currentUniData;
       private int cursorUniData = 0;
@@ -110,7 +113,7 @@ public class PUARestClient extends AbstractRestClient {
       public void createUniversity(UniversityClientModel universityClientModel) throws IOException {
             if(isCreateUniversityAllowed()) {
                   processResponse(this.uniClient.postNewUniversity(getUrl(CREATE_UNI), universityClientModel), (response) -> {
-                        this.currentUniData = Collections.EMPTY_LIST;
+                        this.currentUniData = Collections.emptyList();
                         this.cursorUniData = 0;
                   });
             }
@@ -122,7 +125,7 @@ public class PUARestClient extends AbstractRestClient {
       public void createAndLinkModuleToUniversity(ModuleClientModel moduleClientModel) throws IOException {
             if(isCreateModuleAllowed()) {
                   processResponse(this.moduleClient.postNewModule(this.currentUniData.get(this.cursorUniData).getModule().getUrl(), moduleClientModel), (response) -> {
-                        this.currentModuleData = Collections.EMPTY_LIST;
+                        this.currentModuleData = Collections.emptyList();
                         this.cursorModuleData = 0;
                   });
             }
@@ -204,6 +207,7 @@ public class PUARestClient extends AbstractRestClient {
             }
       }
 
+      // Each branch of the method is tested
       public void getSingleUniversity() throws IOException {
             if(isGetSingleUniversityAllowed()) {
                   if(isLocationHeaderAvailable()) {
@@ -225,18 +229,40 @@ public class PUARestClient extends AbstractRestClient {
             getSingleUniversity(this.currentUniData.get(index).getSelfLink().getUrl());
       }
 
-      public void getSingleUniversity(String url) throws IOException {
+      private void getSingleUniversity(String url) throws IOException {
             processResponse(this.uniClient.getSingleUniversity(url), (response -> {
                   this.currentUniData = new LinkedList<>(response.getResponseData());
                   this.cursorUniData = 0;
             }));
       }
 
+      // Each branch of this method is tested
       public void getSingleModuleOfUniversity() throws IOException {
-            processResponse(this.moduleClient.getSingleModule(this.currentModuleData.get(this.cursorModuleData).getSelfLinkOnSecond().getUrl()), (response) -> {
+            if(isGetSingleModuleAllowed()) {
+                  if(isLocationHeaderAvailable()) {
+                        getSingleModuleOfUniversity(getLocationHeaderURL());
+                  }
+                  else if(isLinkAvailable(GET_SINGLE_MODULE)) {
+                        getSingleModuleOfUniversity(getUrl(GET_SINGLE_MODULE));
+                  }
+                  else if(!this.currentModuleData.isEmpty()) {
+                        processResponse(this.moduleClient.getSingleModule(this.currentModuleData.get(this.cursorModuleData).getSelfLinkOnSecond().getUrl()), (response) -> {
+                              this.currentModuleData = new LinkedList<>(response.getResponseData());
+                              this.cursorModuleData = 0;
+                        });
+                  }
+
+            }
+            else {
+                  throw new IllegalStateException();
+            }
+      }
+
+      private void getSingleModuleOfUniversity(String url) throws IOException {
+            processResponse(this.moduleClient.getSingleModule(url), (response -> {
                   this.currentModuleData = new LinkedList<>(response.getResponseData());
                   this.cursorModuleData = 0;
-            });
+            }));
       }
 
       public void updateUniversity(UniversityClientModel updatedUniversity) throws IOException {
@@ -253,6 +279,19 @@ public class PUARestClient extends AbstractRestClient {
             }
       }
 
+      public void updateModuleOfUniversity(ModuleClientModel updatedModule) throws IOException {
+            if(isUpdateModuleAllowed()) {
+                  processResponse(this.moduleClient.putModule(this.currentModuleData.get(this.cursorModuleData).getSelfLinkOnSecond().getUrl(), updatedModule), (response) -> {
+                        this.currentModuleData = Collections.emptyList();
+                        this.cursorModuleData = 0;
+                  });
+            }
+            else {
+                  throw new IllegalStateException();
+            }
+      }
+
+      // Each branch of this method is tested
       public void deleteUniversity() throws IOException {
             if(isDeleteUniversityAllowed()) {
                   if(isLocationHeaderAvailable()) {
@@ -261,18 +300,40 @@ public class PUARestClient extends AbstractRestClient {
                               this.cursorUniData = 0;
                         });
                   }
-                  else if(!this.currentUniData.isEmpty()) {
-                        processResponse(this.uniClient.deleteUniversity(this.currentUniData.get(this.cursorUniData).getSelfLink().getUrl()), response -> {
-                              this.currentUniData = Collections.emptyList();
-                              this.cursorUniData = 0;
-                        });
-                  }
-                  else {
+                  else if(isLinkAvailable(DEL_UNI)) {
                         processResponse(this.uniClient.deleteUniversity(getUrl(DEL_UNI)), response -> {
                               this.currentUniData = Collections.emptyList();
                               this.cursorUniData = 0;
                         });
                   }
+            }
+            else {
+                  throw new IllegalStateException();
+            }
+      }
+
+      // Each branch of this method is tested
+      public void deleteModuleOfUniversity() throws IOException {
+            if(isDeleteModuleAllowed()) {
+                  if(isLocationHeaderAvailable()) {
+                        processResponse(this.moduleClient.deleteModule(getLocationHeaderURL()), response -> {
+                              this.currentModuleData = Collections.emptyList();
+                              this.cursorModuleData = 0;
+                        });
+                  }
+                  else if(isLinkAvailable(DELETE_MODULE)){
+                        processResponse(this.moduleClient.deleteModule(getUrl(DELETE_MODULE)), response -> {
+                              this.currentModuleData = Collections.emptyList();
+                              this.cursorModuleData = 0;
+                        });
+                  }
+                  /*else if(!this.currentModuleData.isEmpty()) {
+                        System.out.println("Index");
+                        processResponse(this.moduleClient.deleteModule(this.currentModuleData.get(this.cursorModuleData).getSelfLinkOnSecond().getUrl()), response -> {
+                              this.currentModuleData = Collections.emptyList();
+                              this.cursorModuleData = 0;
+                        });
+                  }*/
             }
             else {
                   throw new IllegalStateException();
@@ -299,7 +360,7 @@ public class PUARestClient extends AbstractRestClient {
       }
 
       public boolean isDeleteUniversityAllowed() {
-            return isLinkAvailable(DEL_UNI);
+            return isLinkAvailable(DEL_UNI) || isLocationHeaderAvailable();
       }
 
       public boolean isUpdateUniversityAllowed() {
@@ -316,5 +377,17 @@ public class PUARestClient extends AbstractRestClient {
 
       public boolean isGetAllModulesAllowed() {
             return isLinkAvailable(GET_ALL_LINKED_MODULES);
+      }
+
+      public boolean isGetSingleModuleAllowed() {
+            return isLinkAvailable(GET_SINGLE_MODULE) || !this.currentModuleData.isEmpty() || isLocationHeaderAvailable();
+      }
+
+      public boolean isUpdateModuleAllowed() {
+            return isLinkAvailable(UPDATE_MODULE);
+      }
+
+      public boolean isDeleteModuleAllowed() {
+            return isLinkAvailable(DELETE_MODULE) || !this.currentModuleData.isEmpty() || isLocationHeaderAvailable();
       }
 }
