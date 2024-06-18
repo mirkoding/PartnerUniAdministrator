@@ -25,6 +25,6 @@ public class QueryByModuleName extends AbstractRelationQuery<Response, Module> {
       protected CollectionModelResult<Module> doExecuteQuery(SearchParameter searchParameter) {
             if(!moduleName.isEmpty())
                   return DaoFactory.getInstance().getUniversityModuleDAO().readByModuleName(this.primaryId, this.moduleName, searchParameter);
-            return DaoFactory.getInstance().getUniversityModuleDAO().readAllLinked(this.primaryId);
+            return DaoFactory.getInstance().getUniversityModuleDAO().readAllLinked(this.primaryId, searchParameter);
       }
 }

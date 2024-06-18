@@ -5,6 +5,6 @@ import de.fhws.fiw.fds.PartnerUniAdministrator.Start;
 
 public interface UniversityURI {
       String PATH_ELEMENT = "universities";
-      String REL_PATH = Start.CONTEXT_PATH + Start.APPLICATION_PATH + PATH_ELEMENT;
+      String REL_PATH = Start.CONTEXT_PATH + "/" + Start.APPLICATION_PATH + "/" + PATH_ELEMENT;
       String REL_PATH_ID = REL_PATH + "/{id}";
 }

@@ -15,7 +15,6 @@ public class Application extends AbstractJerseyApplication {
       protected Set<Class<?>> getServiceClasses() {
             final Set<Class<?>> returnValue = new HashSet<>();
 
-            //TODO die ganzen Serviceklassen adden.
             returnValue.add(DispatcherService.class);
             returnValue.add(UniversityService.class);
 

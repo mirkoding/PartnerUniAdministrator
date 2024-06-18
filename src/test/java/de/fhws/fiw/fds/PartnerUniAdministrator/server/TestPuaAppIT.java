@@ -246,13 +246,12 @@ public class TestPuaAppIT {
             client.getSingleUniversity();
             assertEquals(200, client.getLastStatusCode());
             UniversityClientModel receivedUni = client.universityData().getFirst();
-
             UniversityClientModel expectedUni = new UniversityClientModel(
-                  "Hochschule für Wirtschaft und Recht Berlin",
+                  "Berliner Hochschule für Technik",
                   "Germany",
                   "Computer Science",
                   "www.jmu.bin.de",
-                  "Prof. Dr. Rot",
+                  "Prof. Dr. Biedermann",
                   10,
                   10,
                   LocalDate.of(2025, 2, 1),
@@ -276,11 +275,11 @@ public class TestPuaAppIT {
             assertEquals(200, client.getLastStatusCode());
             UniversityClientModel receivedUni = client.universityData().getFirst();
             UniversityClientModel expectedUni = new UniversityClientModel(
-                  "Berliner Hochschule für Technik",
+                  "Hochschule für Wirtschaft und Recht Berlin",
                   "Germany",
                   "Computer Science",
                   "www.jmu.bin.de",
-                  "Prof. Dr. Biedermann",
+                  "Prof. Dr. Rot",
                   10,
                   10,
                   LocalDate.of(2025, 2, 1),
@@ -288,6 +287,22 @@ public class TestPuaAppIT {
             );
 
             assertEquals(expectedUni, receivedUni);
+      }
+
+      @Test
+      public void test_pagination_of_ordering_of_search_ascending() throws IOException {
+            client.start();
+            client.initializeDatabase();
+            client.start();
+            client.getCollectionOfFilteredUniversitiesOrdered("s", '+');
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(15, client.universityData().size());
+
+            // since ordering has already been tested, proceed directly with pagination
+            client.getNextPageOfUniversities();
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(1, client.universityData().size());
+
       }
 
       @Test
@@ -548,5 +563,40 @@ public class TestPuaAppIT {
             assertThrows(IllegalStateException.class, () -> {
                   client.moduleData();
             });
+      }
+
+      @Test
+      public void test_pagination_of_modules() throws IOException {
+            client.start();
+            client.createUniversity(testUni);
+            client.getSingleUniversity();
+
+            for(int i=0; i<20; i++) {
+                  ModuleClientModel module = new ModuleClientModel();
+                  module.setModuleName(faker.educator().course());
+                  module.setSemesterWhenModuleIsOffered(faker.number().numberBetween(1, 7));
+                  module.setNumberOfCredits(faker.number().numberBetween(3, 6));
+
+                  client.start();
+                  client.getAllUniversities();
+                  client.setUniCursor(0);
+                  client.getSingleUniversity();
+                  client.createAndLinkModuleToUniversity(testModule);
+                  assertEquals(201, client.getLastStatusCode());
+            }
+
+            client.start();
+            client.getAllUniversities();
+            assertEquals(200, client.getLastStatusCode());
+            client.setUniCursor(0);
+            client.getSingleUniversity();
+            assertEquals(200, client.getLastStatusCode());
+
+            client.getAllModulesOfUniversity();
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(15, client.moduleData().size());
+            client.getNextPageOfModules();
+            assertEquals(200, client.getLastStatusCode());
+            assertEquals(5, this.client.moduleData().size());
       }
 }

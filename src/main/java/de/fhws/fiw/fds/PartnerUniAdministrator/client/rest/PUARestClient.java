@@ -107,6 +107,17 @@ public class PUARestClient extends AbstractRestClient {
             });
       }
 
+      public void getNextPageOfModules() throws IOException {
+            String url;
+            if((url = getUrl("next")) == null) {
+                  throw new IllegalStateException();
+            }
+            processResponse(this.moduleClient.getCollectionOfModules(url), (response) -> {
+                  this.currentModuleData = response.getResponseData().stream().toList();
+                  this.cursorModuleData = 0;
+            });
+      }
+
 
       // -------------------- Various CRUD-Operations --------------------
 
@@ -327,13 +338,6 @@ public class PUARestClient extends AbstractRestClient {
                               this.cursorModuleData = 0;
                         });
                   }
-                  /*else if(!this.currentModuleData.isEmpty()) {
-                        System.out.println("Index");
-                        processResponse(this.moduleClient.deleteModule(this.currentModuleData.get(this.cursorModuleData).getSelfLinkOnSecond().getUrl()), response -> {
-                              this.currentModuleData = Collections.emptyList();
-                              this.cursorModuleData = 0;
-                        });
-                  }*/
             }
             else {
                   throw new IllegalStateException();

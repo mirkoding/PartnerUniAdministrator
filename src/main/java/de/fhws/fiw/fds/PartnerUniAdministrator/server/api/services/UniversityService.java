@@ -8,7 +8,6 @@ import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.queries.QueryBySearch;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.*;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.*;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.DaoFactory;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.UniversityModuleDAO;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import jakarta.ws.rs.*;

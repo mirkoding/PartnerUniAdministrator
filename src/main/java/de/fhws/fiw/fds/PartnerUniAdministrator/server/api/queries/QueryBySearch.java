@@ -8,9 +8,6 @@ import de.fhws.fiw.fds.sutton.server.database.DatabaseException;
 import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
 import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class QueryBySearch<R> extends AbstractQuery<R, University> {
 
@@ -33,16 +30,6 @@ public class QueryBySearch<R> extends AbstractQuery<R, University> {
 
       @Override
       protected CollectionModelResult<University> doExecuteQuery(SearchParameter searchParameter) throws DatabaseException {
-            if(order.isEmpty() || !order.equals("descending") && !order.equals("ascending")) {
-                  return DaoFactory.getInstance().getUniversityDAO().readByNameOfUniversity(this.search, searchParameter);
-            }
-
-            CollectionModelResult<University> test = DaoFactory.getInstance().getUniversityDAO().readByNameOfUniversity(this.search, searchParameter);
-            Stream<University> result;
-            if(order.equals("descending"))
-                  result = test.getResult().stream().sorted((uni1, uni2) -> uni1.getPartnerUniName().compareToIgnoreCase(uni2.getPartnerUniName()));
-            else // when order is ascending
-                  result = test.getResult().stream().sorted((uni1, uni2) -> uni2.getPartnerUniName().compareToIgnoreCase(uni1.getPartnerUniName()));
-            return new CollectionModelResult<>(result.collect(Collectors.toCollection(ArrayList::new)));
+            return DaoFactory.getInstance().getUniversityDAO().readByNameOfUniversity(search, searchParameter, order);
       }
 }
