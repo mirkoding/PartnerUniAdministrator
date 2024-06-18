@@ -9,6 +9,7 @@ import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.*;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.university_modules.*;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.DaoFactory;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.Status;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -58,6 +59,12 @@ public class UniversityService extends AbstractJerseyService {
       @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
       public Response createSingleUniversity(final University universityModel) {
             try {
+                  if(universityModel.getAmountStudentsToSend() < 0) {
+                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal value for \"amountStudentsToSend\" parameter");
+                  }
+                  else if(universityModel.getAmountStudentsToReceive() < 0) {
+                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal value for \"amountStudentsToReceive\" parameter");
+                  }
                   return new PostNewUniversity(this.serviceContext, universityModel).execute();
             }
             catch(SuttonWebAppException e) {
@@ -148,6 +155,12 @@ public class UniversityService extends AbstractJerseyService {
                                                  final Module moduleModel)
       {
             try {
+                  if(moduleModel.getSemesterWhenModuleIsOffered() < 1 &&  moduleModel.getSemesterWhenModuleIsOffered() > 2) {
+                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal Value for \"Semester When Module Is Offered\".");
+                  }
+                  else if(moduleModel.getNumberOfCredits() <= 0) {
+                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal Value for \"Number Of Credits\".");
+                  }
                   return new PutSingleModuleFromUniversity(this.serviceContext, universityId, moduleId, moduleModel).execute();
             }
             catch(SuttonWebAppException e) {
