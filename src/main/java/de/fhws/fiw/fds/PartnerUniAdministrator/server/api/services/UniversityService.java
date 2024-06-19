@@ -59,12 +59,7 @@ public class UniversityService extends AbstractJerseyService {
       @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
       public Response createSingleUniversity(final University universityModel) {
             try {
-                  if(universityModel.getAmountStudentsToSend() < 0) {
-                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal value for \"amountStudentsToSend\" parameter");
-                  }
-                  else if(universityModel.getAmountStudentsToReceive() < 0) {
-                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal value for \"amountStudentsToReceive\" parameter");
-                  }
+                  checkUniversity(universityModel);
                   return new PostNewUniversity(this.serviceContext, universityModel).execute();
             }
             catch(SuttonWebAppException e) {
@@ -77,8 +72,10 @@ public class UniversityService extends AbstractJerseyService {
       @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
       public Response updateSingleUniversity(@PathParam("id") final long id, final University universityModel) {
             try {
-                  if(DaoFactory.getInstance().getUniversityDAO().doesUniversityExist(id))
+                  if(DaoFactory.getInstance().getUniversityDAO().doesUniversityExist(id)) {
+                        checkUniversity(universityModel);
                         return new PutSingleUniversity(this.serviceContext, id, universityModel).execute();
+                  }
                   else throw new WebApplicationException();
             }
             catch(SuttonWebAppException e) {
@@ -137,8 +134,10 @@ public class UniversityService extends AbstractJerseyService {
                                                    final Module moduleModel)
       {
             try {
-                  if(DaoFactory.getInstance().getUniversityDAO().doesUniversityExist(universityId))
+                  if(DaoFactory.getInstance().getUniversityDAO().doesUniversityExist(universityId)) {
+                        checkModule(moduleModel);
                         return new PostNewModuleOfUniversity(this.serviceContext, universityId, moduleModel).execute();
+                  }
                   else
                         throw new WebApplicationException();
             }
@@ -155,12 +154,7 @@ public class UniversityService extends AbstractJerseyService {
                                                  final Module moduleModel)
       {
             try {
-                  if(moduleModel.getSemesterWhenModuleIsOffered() < 1 &&  moduleModel.getSemesterWhenModuleIsOffered() > 2) {
-                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal Value for \"Semester When Module Is Offered\".");
-                  }
-                  else if(moduleModel.getNumberOfCredits() <= 0) {
-                        throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal Value for \"Number Of Credits\".");
-                  }
+                  checkModule(moduleModel);
                   return new PutSingleModuleFromUniversity(this.serviceContext, universityId, moduleId, moduleModel).execute();
             }
             catch(SuttonWebAppException e) {
@@ -181,4 +175,21 @@ public class UniversityService extends AbstractJerseyService {
             }
       }
 
+      private void checkUniversity(final University universityModel) throws SuttonWebAppException {
+            if(universityModel.getAmountStudentsToSend() < 0) {
+                  throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal value for \"amountStudentsToSend\" parameter");
+            }
+            else if(universityModel.getAmountStudentsToReceive() < 0) {
+                  throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal value for \"amountStudentsToReceive\" parameter");
+            }
+      }
+
+      private void checkModule (final Module moduleModel) throws SuttonWebAppException {
+            if(moduleModel.getSemesterWhenModuleIsOffered() < 1 ||  moduleModel.getSemesterWhenModuleIsOffered() > 2) {
+                  throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal Value for \"Semester When Module Is Offered\".");
+            }
+            else if(moduleModel.getNumberOfCredits() <= 0) {
+                  throw new SuttonWebAppException(Status.BAD_REQUEST, "Illegal Value for \"Number Of Credits\".");
+            }
+      }
 }

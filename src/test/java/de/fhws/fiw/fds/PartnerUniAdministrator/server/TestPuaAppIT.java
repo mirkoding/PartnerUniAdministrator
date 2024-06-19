@@ -88,6 +88,24 @@ public class TestPuaAppIT {
       }
 
       @Test
+      public void test_create_illegal_university() throws IOException {
+            client.start();
+            UniversityClientModel university = new UniversityClientModel(
+                  "Hochschule zum Testen falscher Attributswerte",
+                  "Germany",
+                  "Computer Science",
+                  "www.thws.bin.de",
+                  "Prof. Dr. UngültigeAnzahlAnAmountStudentsToReceive",
+                  10,
+                  -1, // must be >= 0
+                  LocalDate.of(2025, 2, 1),
+                  LocalDate.of(2024, 9, 1)
+            );
+            client.createUniversity(university);
+            assertEquals(400, client.getLastStatusCode());
+      }
+
+      @Test
       public void test_create_and_get_new_university() throws IOException {
             client.start();
             client.createUniversity(testUni);
@@ -328,6 +346,20 @@ public class TestPuaAppIT {
       }
 
       @Test
+      public void test_illegal_update_of_university() throws IOException {
+            client.start();
+            client.createUniversity(testUni);
+            client.getSingleUniversity();
+
+            UniversityClientModel receivedUni = client.universityData().getFirst();
+            receivedUni.setAmountStudentsToReceive(-1);
+
+            client.setUniCursor(0);
+            client.updateUniversity(receivedUni);
+            assertEquals(400, client.getLastStatusCode());
+      }
+
+      @Test
       public void test_create_and_delete_university() throws IOException {
             client.start();
             assertTrue(client.isCreateUniversityAllowed());
@@ -386,7 +418,7 @@ public class TestPuaAppIT {
             assertEquals(201, client.getLastStatusCode());
 
             testModule.setModuleName("Foundations of Distributed Systems");
-            testModule.setSemesterWhenModuleIsOffered(4);
+            testModule.setSemesterWhenModuleIsOffered(1);
             testModule.setNumberOfCredits(5);
 
             client.getSingleUniversity();
@@ -394,6 +426,21 @@ public class TestPuaAppIT {
             client.setUniCursor(0);
             client.createAndLinkModuleToUniversity(testModule);
             assertEquals(201, client.getLastStatusCode());
+      }
+
+      @Test
+      public void test_create_illegal_module_for_university() throws IOException {
+            client.start();
+            client.createUniversity(testUni);
+
+            testModule.setModuleName("Foundations of Distributed Systems");
+            testModule.setSemesterWhenModuleIsOffered(5);
+            testModule.setNumberOfCredits(5);
+
+            client.getSingleUniversity();
+            client.createAndLinkModuleToUniversity(testModule);
+
+            assertEquals(400, client.getLastStatusCode());
       }
 
       @Test
@@ -408,7 +455,7 @@ public class TestPuaAppIT {
             for(int i=0; i<5; i++) {
                   testModule = new ModuleClientModel();
                   testModule.setModuleName(faker.educator().course());
-                  testModule.setSemesterWhenModuleIsOffered(i);
+                  testModule.setSemesterWhenModuleIsOffered(faker.number().numberBetween(1, 2));
                   testModule.setNumberOfCredits(faker.number().numberBetween(1, 7));
 
                   client.start();
@@ -438,7 +485,7 @@ public class TestPuaAppIT {
             for(int i=0; i<5; i++) {
                   testModule = new ModuleClientModel();
                   testModule.setModuleName(faker.educator().course());
-                  testModule.setSemesterWhenModuleIsOffered(i);
+                  testModule.setSemesterWhenModuleIsOffered(faker.number().numberBetween(1, 2));
                   testModule.setNumberOfCredits(faker.number().numberBetween(1, 7));
 
                   client.start();
@@ -475,7 +522,7 @@ public class TestPuaAppIT {
             assertEquals(201, client.getLastStatusCode());
 
             testModule.setModuleName("Foundations of Distributed Systems");
-            testModule.setSemesterWhenModuleIsOffered(4);
+            testModule.setSemesterWhenModuleIsOffered(1);
             testModule.setNumberOfCredits(5);
 
             client.getSingleUniversity();
@@ -490,8 +537,7 @@ public class TestPuaAppIT {
             ModuleClientModel receivedModule = client.moduleData().getFirst();
             assertEquals(testModule, receivedModule);
 
-            ModuleClientModel updatedModule = receivedModule;
-            updatedModule.setModuleName("Foundations of Theoretical Computer Science");
+            receivedModule.setModuleName("Foundations of Theoretical Computer Science");
 
             client.start();
             client.getAllUniversities();
@@ -499,14 +545,29 @@ public class TestPuaAppIT {
             client.getSingleUniversity();
             client.setModuleCursor(0);
             client.getSingleModuleOfUniversity();
-            client.updateModuleOfUniversity(updatedModule);
+            client.updateModuleOfUniversity(receivedModule);
             assertEquals(204, client.getLastStatusCode());
 
             client.getSingleModuleOfUniversity();
             assertEquals(200, client.getLastStatusCode());
             ModuleClientModel receivedModule2 = client.moduleData().getFirst();
             assertEquals("Foundations of Theoretical Computer Science", receivedModule2.getModuleName());
+      }
 
+      @Test
+      public void test_illegal_update_of_module() throws IOException {
+            client.start();
+            client.createUniversity(testUni);
+
+            testModule.setModuleName("Foundations of Distributed Systems");
+            testModule.setSemesterWhenModuleIsOffered(0);
+            testModule.setNumberOfCredits(5);
+
+            client.getSingleUniversity();
+            client.setUniCursor(0);
+            client.createAndLinkModuleToUniversity(testModule);
+
+            assertEquals(400, client.getLastStatusCode());
       }
 
       @Test
@@ -521,7 +582,7 @@ public class TestPuaAppIT {
             for(int i=0; i<5; i++) {
                   testModule = new ModuleClientModel();
                   testModule.setModuleName(faker.educator().course());
-                  testModule.setSemesterWhenModuleIsOffered(i);
+                  testModule.setSemesterWhenModuleIsOffered(faker.number().numberBetween(1, 2));
                   testModule.setNumberOfCredits(faker.number().numberBetween(1, 7));
 
                   client.start();
@@ -556,13 +617,16 @@ public class TestPuaAppIT {
             client.start();
             client.createUniversity(testUni);
             client.getSingleUniversity();
+
+            testModule.setModuleName("Foundations of Distributed Systems");
+            testModule.setSemesterWhenModuleIsOffered(1);
+            testModule.setNumberOfCredits(5);
+
             client.createAndLinkModuleToUniversity(testModule);
             assertEquals(201, client.getLastStatusCode());
             client.deleteModuleOfUniversity();
             assertEquals(204, client.getLastStatusCode());
-            assertThrows(IllegalStateException.class, () -> {
-                  client.moduleData();
-            });
+            assertThrows(IllegalStateException.class, () -> client.moduleData());
       }
 
       @Test
@@ -574,14 +638,14 @@ public class TestPuaAppIT {
             for(int i=0; i<20; i++) {
                   ModuleClientModel module = new ModuleClientModel();
                   module.setModuleName(faker.educator().course());
-                  module.setSemesterWhenModuleIsOffered(faker.number().numberBetween(1, 7));
+                  module.setSemesterWhenModuleIsOffered(faker.number().numberBetween(1, 2));
                   module.setNumberOfCredits(faker.number().numberBetween(3, 6));
 
                   client.start();
                   client.getAllUniversities();
                   client.setUniCursor(0);
                   client.getSingleUniversity();
-                  client.createAndLinkModuleToUniversity(testModule);
+                  client.createAndLinkModuleToUniversity(module);
                   assertEquals(201, client.getLastStatusCode());
             }
 

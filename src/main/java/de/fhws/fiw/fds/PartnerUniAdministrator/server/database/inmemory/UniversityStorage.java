@@ -52,7 +52,7 @@ public class UniversityStorage extends AbstractInMemoryStorage<University> imple
             else if(order.equals("descending")){
                   comparator = (uni1, uni2) -> uni2.getPartnerUniName().compareTo(uni1.getPartnerUniName());
             }
-            else throw new DatabaseException("Invalid order: " + order);
+            else throw new DatabaseException("Invalid order parameter: " + order);
 
 
             CollectionModelResult<University> toReturn = new CollectionModelResult<>(
