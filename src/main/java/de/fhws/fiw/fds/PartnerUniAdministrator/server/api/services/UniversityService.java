@@ -34,9 +34,9 @@ public class UniversityService extends AbstractJerseyService {
       {
             try {
                   if(search == null || search.isEmpty()) {
-                        return new GetAllUniversities(this.serviceContext, new QueryAllUniversities<>(order, offset, size)).execute();
+                        return new GetAllUniversities(this.serviceContext, new QueryAllUniversities<>(order, offset, size), search).execute();
                   }
-                  return new GetAllUniversities(this.serviceContext, new QueryBySearch<>(search, order, offset, size)).execute();
+                  return new GetAllUniversities(this.serviceContext, new QueryBySearch<>(search, order, offset, size), search).execute();
             }
             catch(SuttonWebAppException e) {
                   throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
