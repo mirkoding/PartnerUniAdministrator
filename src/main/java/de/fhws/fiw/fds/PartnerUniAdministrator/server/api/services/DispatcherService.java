@@ -2,13 +2,10 @@ package de.fhws.fiw.fds.PartnerUniAdministrator.server.api.services;
 
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.models.University;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.dispatcher.GetDispatcher;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.UniversityURI;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.DaoFactory;
 import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.UniversityDAO;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.database.inmemory.UniversityStorage;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
-import de.fhws.fiw.fds.suttondemo.server.database.utils.InitializeDatabase;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -46,7 +43,8 @@ public class DispatcherService extends AbstractJerseyService {
       @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
       public Response initializeDatabase() { // wurde getestet
             System.out.println("Initializing Database");
-            University uni1 = new University(
+            University[] universities = {
+            new University(
                   "Prof. Dr. Braun",
                   10,
                   10,
@@ -56,10 +54,10 @@ public class DispatcherService extends AbstractJerseyService {
                   "THWS",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni2 = new University(
-                  "Prof. Dr. Schwarz",
+            new University(
+                  "Prof. Dr. Waitz",
                   10,
                   10,
                   "Germany",
@@ -68,284 +66,264 @@ public class DispatcherService extends AbstractJerseyService {
                   "JMU",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni3 = new University(
+            new University(
                   "Prof. Dr. Balzer",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.lmu.bin.de",
                   "LMU",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni4 = new University(
+            new University(
                   "Prof. Dr. Heinzl",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.tum.bin.de",
                   "TUM",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni5 = new University(
+            new University(
                   "Prof. Dr. Fertig",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.hm.bin.de",
                   "HM",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni6 = new University(
+            new University(
                   "Prof. Dr. Deinzer",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.tud.bin.de",
                   "TU Dresden",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni7 = new University(
+            new University(
                   "Prof. Dr. John",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.hub.bin.de",
                   "Humboldt-Universität zu Berlin",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni8 = new University(
+            new University(
                   "Prof. Dr. Schleif",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.tha.bin.de",
                   "THA",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni9 = new University(
+            new University(
                   "Prof. Dr. Heß",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.fau.bin.de",
                   "Friedrich-Alexander-Universität Erlangen-Nürnberg",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni10 = new University(
+            new University(
                   "Prof. Dr. Wedlich",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.ur.bin.de",
                   "Universität Regensburg",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni11 = new University(
+            new University(
                   "Prof. Dr. Biedermann",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.bht.bin.de",
                   "Berliner Hochschule für Technik",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni12 = new University(
+            new University(
                   "Prof. Dr. Bachmeier",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.dbu.bin.de",
                   "Digital Business University of Applied Sciences",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni13 = new University(
-                  "Prof. Dr. Lila",
+            new University(
+                  "Prof. Dr. Tanenbaum",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.fub.bin.de",
                   "Freie Universität Berlin",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni14 = new University(
-                  "Prof. Dr. Rot",
+            new University(
+                  "Prof. Dr. Fielding",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.hwr.bin.de",
                   "Hochschule für Wirtschaft und Recht Berlin",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni15 = new University(
-                  "Prof. Dr. Blau",
+            new University(
+                  "Prof. Dr. Burners-Lee",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.msb.bin.de",
                   "Medical School Berlin",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni16 = new University(
-                  "Prof. Dr. Pink",
+            new University(
+                  "Prof. Dr. Turing",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.thw.bin.de",
                   "Technische Hochschule Wildau",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni17 = new University(
-                  "Prof. Dr. Rosa",
+            new University(
+                  "Prof. Dr. Jobs",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.bu.bin.de",
                   "Brand University of Applied Sciences",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni18 = new University(
-                  "Prof. Dr. Gelb",
+            new University(
+                  "Prof. Dr. Wayne",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.fu.bin.de",
                   "Fernuni Hagen",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni19 = new University(
-                  "Prof. Dr. Türkis",
+            new University(
+                  "Prof. Dr. Wozniak",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.hsu.bin.de",
                   "Helmut-Schmidt-Universität der Bundeswehr Hamburg",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni20 = new University(
-                  "Prof. Dr. Müller",
+            new University(
+                  "Prof. Dr. Zuse",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.uh.bin.de",
                   "Universität Hamburg",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni21 = new University(
-                  "Prof. Dr. Meier",
+            new University(
+                  "Prof. Dr. Page",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.fuas.bin.de",
                   "Frankfurt University of Applied Sciences",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni22 = new University(
-                  "Prof. Dr. Kek",
+            new University(
+                  "Prof. Dr. Brin",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.jwgu.bin.de",
                   "Johann Wolfgang Goethe-Universität",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            ),
 
-            University uni23 = new University(
-                  "Prof. Dr. Schwanz",
+            new University(
+                  "Prof. Dr. Gates",
                   10,
                   10,
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.harvard.bin.com",
                   "Harvard",
                   LocalDate.of(2024, 9, 1),
                   LocalDate.of(2025, 2, 1)
-            );
+            )};
 
             UniversityDAO universityDAO = DaoFactory.getInstance().getUniversityDAO();
-            universityDAO.create(uni1);
-            universityDAO.create(uni2);
-            universityDAO.create(uni3);
-            universityDAO.create(uni4);
-            universityDAO.create(uni5);
-            universityDAO.create(uni6);
-            universityDAO.create(uni7);
-            universityDAO.create(uni8);
-            universityDAO.create(uni9);
-            universityDAO.create(uni10);
-            universityDAO.create(uni11);
-            universityDAO.create(uni12);
-            universityDAO.create(uni13);
-            universityDAO.create(uni14);
-            universityDAO.create(uni15);
-            universityDAO.create(uni16);
-            universityDAO.create(uni17);
-            universityDAO.create(uni18);
-            universityDAO.create(uni19);
-            universityDAO.create(uni20);
-            universityDAO.create(uni21);
-            universityDAO.create(uni22);
-            universityDAO.create(uni23);
+            for(University uni : universities) {
+                  universityDAO.create(uni);
+            }
             return Response.created(uriInfo.getAbsolutePathBuilder().build()).build();
       }
 }

@@ -17,11 +17,31 @@ public class GetAllUniversities extends AbstractGetCollectionState<Response, Uni
       @Override
       protected void defineTransitionLinks() {
             addLink(UniversityURI.REL_PATH, UniversityRelTypes.CREATE_UNIVERSITY, getAcceptRequestHeader());
+
+            // Get page of results of search
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}",
-                  UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, getAcceptRequestHeader());
+                  UniversityRelTypes.GET_PAGE_OF_UNIVERSITIES_BY_FILTER, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}&order=ascending",
-                  UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_ASCENDING, getAcceptRequestHeader());
+                  UniversityRelTypes.GET_PAGE_OF_UNIVERSITIES_BY_FILTER_ASCENDING, getAcceptRequestHeader());
             addLink(UniversityURI.REL_PATH + "?search={SEARCH}&order=descending",
-                  UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_DESCENDING, getAcceptRequestHeader());
+                  UniversityRelTypes.GET_PAGE_OF_UNIVERSITIES_BY_FILTER_DESCENDING, getAcceptRequestHeader());
+
+            if(this.result.getResult().size() < this.result.getTotalNumberOfResult()) {
+                  // Get all results
+                  addLink(UniversityURI.REL_PATH + "?offset=0&size=" + this.result.getTotalNumberOfResult(),
+                        UniversityRelTypes.GET_ALL_UNIVERSITIES, getAcceptRequestHeader());
+                  addLink(UniversityURI.REL_PATH + "?offset=0&size=" + this.result.getTotalNumberOfResult() + "&order=ascending",
+                        UniversityRelTypes.GET_ALL_UNIVERSITIES_ASCENDING, getAcceptRequestHeader());
+                  addLink(UniversityURI.REL_PATH + "?offset=0&size=" + this.result.getTotalNumberOfResult() + "&order=descending",
+                        UniversityRelTypes.GET_ALL_UNIVERSITIES_DESCENDING, getAcceptRequestHeader());
+
+                  // Get all results of search
+                  addLink(UniversityURI.REL_PATH + "?search={SEARCH}&offset=0&size=" + this.result.getTotalNumberOfResult(),
+                        UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER, getAcceptRequestHeader());
+                  addLink(UniversityURI.REL_PATH + "?search={SEARCH}&offset=0&size=" + this.result.getTotalNumberOfResult() + "&order=ascending",
+                        UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_ASCENDING, getAcceptRequestHeader());
+                  addLink(UniversityURI.REL_PATH + "?search={SEARCH}&offset=0&size=" + this.result.getTotalNumberOfResult() + "&order=descending",
+                        UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER_DESCENDING, getAcceptRequestHeader());
+            }
       }
 }

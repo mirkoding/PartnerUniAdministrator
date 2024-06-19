@@ -4,14 +4,11 @@ import com.github.javafaker.Faker;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.models.ModuleClientModel;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.models.UniversityClientModel;
 import de.fhws.fiw.fds.PartnerUniAdministrator.client.rest.PUARestClient;
-import de.fhws.fiw.fds.PartnerUniAdministrator.server.api.states.universities.UniversityRelTypes;
-import de.fhws.fiw.fds.sutton.client.utils.Link;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,8 +52,7 @@ public class TestPuaAppIT {
       @Test
       public void test_dispatcher_is_get_all_universities_by_filter_allowed() throws IOException {
             client.start();
-            Map<String, Link> states = client.getPossibleNextStates();
-            assertTrue(states.containsKey(UniversityRelTypes.GET_ALL_UNIVERSITIES_BY_FILTER));
+            assertTrue(client.isGetAllUniversitiesByFilterAllowed());
       }
 
       @Test
@@ -208,7 +204,7 @@ public class TestPuaAppIT {
                   "Berliner Hochschule für Technik",
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.bht.bin.de",
                   "Prof. Dr. Biedermann",
                   10,
                   10,
@@ -237,7 +233,7 @@ public class TestPuaAppIT {
                   "Universität Regensburg",
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.ur.bin.de",
                   "Prof. Dr. Wedlich",
                   10,
                   10,
@@ -268,7 +264,7 @@ public class TestPuaAppIT {
                   "Berliner Hochschule für Technik",
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
+                  "www.bht.bin.de",
                   "Prof. Dr. Biedermann",
                   10,
                   10,
@@ -296,8 +292,8 @@ public class TestPuaAppIT {
                   "Hochschule für Wirtschaft und Recht Berlin",
                   "Germany",
                   "Computer Science",
-                  "www.jmu.bin.de",
-                  "Prof. Dr. Rot",
+                  "www.hwr.bin.de",
+                  "Prof. Dr. Fielding",
                   10,
                   10,
                   LocalDate.of(2025, 2, 1),

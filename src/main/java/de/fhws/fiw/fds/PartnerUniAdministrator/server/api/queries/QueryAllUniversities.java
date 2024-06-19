@@ -22,6 +22,4 @@ public class QueryAllUniversities<R> extends AbstractQuery<R, University> {
       protected CollectionModelResult<University> doExecuteQuery(SearchParameter searchParameter) throws DatabaseException {
             return DaoFactory.getInstance().getUniversityDAO().readAllUniversities(searchParameter, order);
       }
-
-
 }

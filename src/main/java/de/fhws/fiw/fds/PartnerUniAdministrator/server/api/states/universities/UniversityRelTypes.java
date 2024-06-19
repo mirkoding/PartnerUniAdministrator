@@ -11,4 +11,8 @@ public interface UniversityRelTypes {
       String GET_ALL_UNIVERSITIES_BY_FILTER = "getFilteredUniversities";
       String GET_ALL_UNIVERSITIES_BY_FILTER_ASCENDING = "getFilteredUniversitiesAscending";
       String GET_ALL_UNIVERSITIES_BY_FILTER_DESCENDING = "getFilteredUniversitiesDescending";
+
+      String GET_PAGE_OF_UNIVERSITIES_BY_FILTER = "getFilteredPageOfUniversities";
+      String GET_PAGE_OF_UNIVERSITIES_BY_FILTER_ASCENDING = "getFilteredPageOfUniversitiesAscending";
+      String GET_PAGE_OF_UNIVERSITIES_BY_FILTER_DESCENDING = "getFilteredPageOfUniversitiesDescending";
 }

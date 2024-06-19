@@ -11,21 +11,13 @@ import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 
 public class QueryBySearch<R> extends AbstractQuery<R, University> {
 
-      private String search;
+      private final String search;
       private final String order;
 
       public QueryBySearch(String search, String order, int offset, int size) {
             this.search = search;
             this.order = order;
             this.pagingBehavior = new PagingBehaviorUsingOffsetSize<>(offset, size);
-      }
-
-      public String getSearch() {
-            return search;
-      }
-
-      public void setSearch(String search) {
-            this.search = search;
       }
 
       @Override
